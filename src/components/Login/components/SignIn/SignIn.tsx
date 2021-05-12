@@ -4,9 +4,11 @@ import { Validation } from "lib/utils";
 import React, { useState } from "react";
 import { Field, Form } from "react-final-form";
 import styled from "styled-components";
+import { BrowserRouter as Router, useHistory} from "react-router-dom";
 
 const SignIn = () => {
   const [isError, setIsError] = useState(false);
+  const history = useHistory();
 
   const onValidate = ({ email, password }: SignInData) => {
     const errors = {
@@ -22,50 +24,56 @@ const SignIn = () => {
   };
 
   const onSubmit = ({ email, password }: SignInData) => {
-      onValidate({email, password});
-  }
+    onValidate({ email, password });
+  };
 
   return (
-    <Wrap>
-      <Title>Welcome to BaseballCloud!</Title>
-      <Subtitle>Sign into your account here:</Subtitle>
-      <Form
-        onSubmit={onSubmit}
-        initialValues={{ email: "", password: "" }}
-        render={({ form }) => (
-          <>
-            <InputWrap>
-              <Icon className="fas fa-user"></Icon>
-              <Field
-                name="email"
-                type="email"
-                placeholder={"Email"}
-                component={InputLogin}
-              />
-            </InputWrap>
-            <InputWrap>
-              <Icon className="fas fa-lock"></Icon>
-              <Field
-                name="password"
-                placeholder={"Password"}
-                type="password"
-                component={InputLogin}
-              />
-            </InputWrap>
+    <Router>
+      <Wrap>
+        <Title>Welcome to BaseballCloud!</Title>
+        <Subtitle>Sign into your account here:</Subtitle>
+        <Form
+          onSubmit={onSubmit}
+          initialValues={{ email: "", password: "" }}
+          render={({ form }) => (
+            <>
+              <InputWrap>
+                <Icon className="fas fa-user"></Icon>
+                <Field
+                  name="email"
+                  type="email"
+                  title="Email"
+                  placeholder={"Email"}
+                  component={InputLogin}
+                />
+              </InputWrap>
+              <InputWrap>
+                <Icon className="fas fa-lock"></Icon>
+                <Field
+                  name="password"
+                  title="Password"
+                  placeholder={"Password"}
+                  type="password"
+                  component={InputLogin}
+                />
+              </InputWrap>
 
-            {isError && <ErrorValidation>
-              Invalid login credentials. Please try again.
-            </ErrorValidation>}
-            <ButtonSubmit onClick={form.submit}>Sign In</ButtonSubmit>
-          </>
-        )}
-      />
-      <ForgotLink>Forgotten password?</ForgotLink>
-      <Footer>
-        Don’t have an account?
-        <Link>Sign Up</Link>
-      </Footer>
-    </Wrap>
+              {isError && (
+                <ErrorValidation>
+                  Invalid login credentials. Please try again.
+                </ErrorValidation>
+              )}
+              <ButtonSubmit onClick={form.submit}>Sign In</ButtonSubmit>
+            </>
+          )}
+        />
+        <ForgotLink onClick={() => history.push('/forgotpassword')}>Forgotten password?</ForgotLink>
+        <Footer>
+          Don’t have an account?
+            <SignUpLink onClick={() => history.push('/registration')}>Sign Up</SignUpLink>
+        </Footer>
+      </Wrap>
+    </Router>
   );
 };
 
@@ -105,7 +113,7 @@ const Footer = styled.div`
   color: #667784;
 `;
 
-const Link = styled.a`
+const SignUpLink = styled.span`
   font-size: 1.6rem;
   padding-left: 3px;
   line-height: 1.13;

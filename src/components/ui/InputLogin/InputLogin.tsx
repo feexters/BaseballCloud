@@ -9,7 +9,12 @@ const InputLogin: React.FC<InputProps> = ({
   meta,
   ...rest
 }: InputProps) => {
-  return <Input {...input} {...rest} />;
+  return (
+    <Wrap>
+      <Input {...input} {...rest} />
+      {meta.touched && meta.error && <ErrorValidation>{meta.error}</ErrorValidation>}
+    </Wrap>
+  );
 };
 
 const Input = styled.input`
@@ -23,7 +28,6 @@ const Input = styled.input`
   font-weight: 400;
   color: #667784;
   border: 1px solid transparent;
-  margin-bottom: 15px;
 
   &:focus {
     background-color: white;
@@ -36,8 +40,21 @@ const Input = styled.input`
   }
 
   ::placeholder {
-    transition: color ease .5s;
+    transition: color ease 0.5s;
   }
+`;
+
+const ErrorValidation = styled.span`
+  font-size: 1.6rem;
+  align-self: flex-start;
+  color: #f05f62;
+  margin-top: 8px;
+`;
+const Wrap = styled.div`
+  width: 100%;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
 `;
 
 export default InputLogin;
