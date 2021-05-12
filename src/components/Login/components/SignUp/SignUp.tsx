@@ -109,6 +109,7 @@ const SignIn = () => {
                   type="email"
                   title="Email"
                   placeholder={"Email"}
+                  onBlur={() => {}}
                   component={InputLogin}
                 />
               </InputWrap>
@@ -119,6 +120,7 @@ const SignIn = () => {
                   title="Password"
                   placeholder={"Password"}
                   type="password"
+                  onBlur={() => {}}
                   component={InputLogin}
                 />
               </InputWrap>

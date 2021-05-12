@@ -1,30 +1,22 @@
 import { InputLogin } from "components/ui";
 import { SignInData } from "lib/interfaces";
 import { Validation } from "lib/utils";
-import React, { useState } from "react";
+import React from "react";
 import { Field, Form } from "react-final-form";
 import styled from "styled-components";
-import { BrowserRouter as Router, useHistory} from "react-router-dom";
+import { BrowserRouter as Router, useHistory } from "react-router-dom";
+import { FORM_ERROR } from "final-form";
 
 const SignIn = () => {
-  const [isError, setIsError] = useState(false);
   const history = useHistory();
 
-  const onValidate = ({ email, password }: SignInData) => {
-    const errors = {
-      email: Validation.validation(email),
-      password: Validation.validation(password),
-    };
-
-    if (errors.email || errors.password) {
-      setIsError(true);
-    } else {
-      setIsError(false);
-    }
-  };
-
   const onSubmit = ({ email, password }: SignInData) => {
-    onValidate({ email, password });
+    console.log("Submit");
+    if (Validation.email(email) || Validation.password(password)) {
+      return { [FORM_ERROR]: "Invalid login credentials. Please try again." };
+    }
+
+    return {};
   };
 
   return (
@@ -35,7 +27,7 @@ const SignIn = () => {
         <Form
           onSubmit={onSubmit}
           initialValues={{ email: "", password: "" }}
-          render={({ form }) => (
+          render={({ form, submitError }) => (
             <>
               <InputWrap>
                 <Icon className="fas fa-user"></Icon>
@@ -58,19 +50,21 @@ const SignIn = () => {
                 />
               </InputWrap>
 
-              {isError && (
-                <ErrorValidation>
-                  Invalid login credentials. Please try again.
-                </ErrorValidation>
-              )}
-              <ButtonSubmit onClick={form.submit}>Sign In</ButtonSubmit>
+              {submitError && <ErrorValidation>{submitError}</ErrorValidation>}
+              <ButtonSubmit onClick={form.submit} type="submit">
+                Sign In
+              </ButtonSubmit>
             </>
           )}
         />
-        <ForgotLink onClick={() => history.push('/forgotpassword')}>Forgotten password?</ForgotLink>
+        <ForgotLink onClick={() => history.push("/forgotpassword")}>
+          Forgotten password?
+        </ForgotLink>
         <Footer>
           Don’t have an account?
-            <SignUpLink onClick={() => history.push('/registration')}>Sign Up</SignUpLink>
+          <SignUpLink onClick={() => history.push("/registration")}>
+            Sign Up
+          </SignUpLink>
         </Footer>
       </Wrap>
     </Router>
@@ -176,6 +170,7 @@ const ErrorValidation = styled.span`
   font-size: 1.6rem;
   align-self: flex-start;
   margin-top: 8px;
+  margin-bottom: 2px;
   color: #f05f62;
 `;
 
