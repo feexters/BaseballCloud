@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { LogoIcon } from '../../assets/images/svg';
+import { LogoIcon } from 'assets';
 
 const Header = () => {
     return (

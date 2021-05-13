@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { Field, Form } from "react-final-form";
 import styled from "styled-components";
 import { BrowserRouter as Router, useHistory } from "react-router-dom";
-import { SuccessIcon } from "assets/images/svg";
+import { SuccessIcon } from "assets";
 
 const SignIn = () => {
   const [isPlayer, setIsPlayer] = useState(true);
