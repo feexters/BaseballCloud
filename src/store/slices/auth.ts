@@ -33,10 +33,10 @@ export const auth = createSlice({
     setIsValidate(state, action: PayloadAction<boolean>) {
       state.isValid = action.payload;
     },
-    startSubmitting(state) {
+    startAuthSubmitting(state) {
       state.submit.status = true;
     },
-    finishAuthSumbmiting(state, action: PayloadAction<string>) {
+    finishAuthSubmitting(state, action: PayloadAction<string>) {
       state.submit.status = false;
       state.submit.result = action.payload;
     },
@@ -46,7 +46,7 @@ export const auth = createSlice({
 export const {
   authorized,
   logout,
-  startSubmitting,
-  finishAuthSumbmiting,
+  startAuthSubmitting,
+  finishAuthSubmitting,
   setIsValidate,
 } = auth.actions;

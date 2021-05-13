@@ -1,5 +1,5 @@
 import { put, takeEvery, call, StrictEffect } from "redux-saga/effects";
-import { authorized, finishAuthSumbmiting, startSubmitting } from "store/slices";
+import { authorized, finishAuthSubmitting, startAuthSubmitting } from "store/slices";
 import { AUTH_SIGN_IN } from "../actions";
 import { Headers, SignInData } from "lib/interfaces";
 import { fetchSignIn } from "../axios";
@@ -13,15 +13,15 @@ function* signInWorker({
   payload,
 }: SingInWorker): Generator<StrictEffect, void, Headers> {
   try {
-    yield put(startSubmitting())
+    yield put(startAuthSubmitting())
     const headers = yield call(() => fetchSignIn(payload));
 
     
     if (headers) {
       yield put(authorized({ status: true, headers: headers}));
-      yield put(finishAuthSumbmiting(''))
+      yield put(finishAuthSubmitting(''))
     } else {
-      yield put(finishAuthSumbmiting('Invalid login credentials. Please try again.'));
+      yield put(finishAuthSubmitting('Invalid login credentials. Please try again.'));
     }
   } catch (e) {
     console.error(e);

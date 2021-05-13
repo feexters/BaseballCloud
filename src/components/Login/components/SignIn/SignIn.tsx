@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { BrowserRouter as Router, useHistory } from "react-router-dom";
 import { useAppDispatch, useAppSelector} from "lib/hooks";
 import { authSingIn } from "store";
-import { finishAuthSumbmiting } from "store/slices";
+import { finishAuthSubmitting } from "store/slices";
 
 const SignIn = () => {
   const history = useHistory();
@@ -14,7 +14,7 @@ const SignIn = () => {
   const { submit } = useAppSelector(state => state.auth);
 
   useEffect(() => {
-    dispatch(finishAuthSumbmiting(''))
+    dispatch(finishAuthSubmitting(''))
   }, [dispatch]);
 
   const onSubmit = ({ email, password }: SignInData) => {
