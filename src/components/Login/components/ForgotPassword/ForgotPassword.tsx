@@ -1,4 +1,4 @@
-import { InputLogin } from "components/ui";
+import { InputLogin } from "ui";
 import { SignInData } from "lib/interfaces";
 import { Validation } from "lib/utils";
 import React from "react";

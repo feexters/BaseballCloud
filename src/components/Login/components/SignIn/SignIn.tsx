@@ -1,4 +1,4 @@
-import { InputLogin } from "components/ui";
+import { InputLogin } from "ui";
 import { SignInData } from "lib/interfaces";
 import React, { useEffect } from "react";
 import { Field, Form } from "react-final-form";
