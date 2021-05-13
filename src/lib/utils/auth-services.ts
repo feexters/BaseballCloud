@@ -21,7 +21,6 @@ class Auth {
   }
 
   setHeaders(headers: Headers) {
-    console.log(document.cookie)
     document.cookie = `${this.TOKEN}=${headers["access-token"]}; secure`
     document.cookie = `${this.CLIENT}=${headers.client}; secure`
     document.cookie = `${this.UID}=${headers.uid}; secure`

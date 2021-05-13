@@ -1,6 +1,7 @@
 import { ForgotPassword, SignIn, SignUp } from "components";
 import { Profile } from "components/Profile";
 import { useAppDispatch, useAppSelector } from "lib/hooks";
+import { Auth } from "lib/utils";
 import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
@@ -15,7 +16,7 @@ const HomeRouter = () => {
   const { headers, isValid } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    if (headers["access-token"]) {
+    if (Auth.getHeaders()["access-token"]) {
       dispatch(validateToken());
     }
   }, [headers, dispatch]);
@@ -24,14 +25,14 @@ const HomeRouter = () => {
     <Router>
       <Switch>
         <Route exact path="/">
+          {!isValid ? <SignIn /> : <Redirect to="/" />}
           <Redirect to="/login" />
         </Route>
         <Route path="/login">
-          {/* {!isValid ? <Login /> : <Redirect to="/profile" />} */}
-          <SignIn />
+          {!isValid ? <SignIn /> : <Redirect to="/profile" />}
         </Route>
         <Route path="/profile">
-          {!isValid ? <Redirect to="/profile" /> : <Profile />}
+          {!isValid ? <Redirect to="/login" /> : <Profile />}
         </Route>
         <Route path="/registration">
           <SignUp />
