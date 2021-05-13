@@ -4,25 +4,26 @@ import { Validation } from "lib/utils";
 import React, { useEffect } from "react";
 import { Field, Form } from "react-final-form";
 import styled from "styled-components";
-import { BrowserRouter as Router, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "lib/hooks";
-import { forgotPassword } from 'store/sagas'
+import { forgotPassword } from "store/sagas";
 import { finishAuthSubmitting } from "store";
+import { LoginLayout } from "layouts";
 
 const ForgotPassword = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const { submit } = useAppSelector(state => state.auth);
+  const { submit } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(finishAuthSubmitting(''))
+    dispatch(finishAuthSubmitting(""));
   }, [dispatch]);
 
   const onSubmit = ({ email }: SignInData) => {
-    dispatch(forgotPassword(email))
+    dispatch(forgotPassword(email));
   };
 
-  const onValidate = ({ email }: {email: string}) => {
+  const onValidate = ({ email }: { email: string }) => {
     const errors = {
       email: Validation.email(email),
     };
@@ -35,61 +36,51 @@ const ForgotPassword = () => {
   };
 
   return (
-    <Router>
-      <Wrap>
-        <Title>Forgot Password</Title>
-        <Subtitle>
-          Please enter your email address. You will receive a link to reset your
-          password via email.
-        </Subtitle>
-        <Form
-          onSubmit={onSubmit}
-          validate={onValidate}
-          initialValues={{ email: "" }}
-          render={({ form }) => (
-            <>
-              <InputWrap>
-                <Icon className="fas fa-user"></Icon>
-                <Field
-                  name="email"
-                  type="email"
-                  title="Email"
-                  onBlur={() => {}}
-                  placeholder={"Email"}
-                  component={InputLogin}
-                />
-              </InputWrap>
+    <LoginLayout>
+      <Title>Forgot Password</Title>
+      <Subtitle>
+        Please enter your email address. You will receive a link to reset your
+        password via email.
+      </Subtitle>
+      <Form
+        onSubmit={onSubmit}
+        validate={onValidate}
+        initialValues={{ email: "" }}
+        render={({ form }) => (
+          <>
+            <InputWrap>
+              <Icon className="fas fa-user"></Icon>
+              <Field
+                name="email"
+                type="email"
+                title="Email"
+                onBlur={() => {}}
+                placeholder={"Email"}
+                component={InputLogin}
+              />
+            </InputWrap>
 
-              {submit.result && <ErrorValidation>{submit.result}</ErrorValidation>}
-              <ButtonSubmit isSubmitting={submit.status} disabled={submit.status} onClick={form.submit} type="submit">
-                Submit
-              </ButtonSubmit>
-            </>
-          )}
-        />
-        <Footer>
-          Remember password?
-          <SignInLink onClick={() => history.push("/login")}>
-            Sign In
-          </SignInLink>
-        </Footer>
-      </Wrap>
-    </Router>
+            {submit.result && (
+              <ErrorValidation>{submit.result}</ErrorValidation>
+            )}
+            <ButtonSubmit
+              isSubmitting={submit.status}
+              disabled={submit.status}
+              onClick={form.submit}
+              type="submit"
+            >
+              Submit
+            </ButtonSubmit>
+          </>
+        )}
+      />
+      <Footer>
+        Remember password?
+        <SignInLink onClick={() => history.push("/login")}>Sign In</SignInLink>
+      </Footer>
+    </LoginLayout>
   );
 };
-
-const Wrap = styled.div`
-  width: 100%;
-  max-width: 450px;
-  padding: 16px;
-  background: hsla(0, 0%, 100%, 0.8);
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  border-radius: 8px;
-  box-shadow: 0 0 20px rgb(0 0 0 / 40%);
-  backdrop-filter: blur(5px);
-`;
 
 const Title = styled.h1`
   font-size: 2.4rem;
@@ -142,7 +133,7 @@ const Icon = styled.i`
   bottom: 0;
 `;
 
-const ButtonSubmit = styled.button<{isSubmitting: boolean}>`
+const ButtonSubmit = styled.button<{ isSubmitting: boolean }>`
   width: 100%;
   padding-top: 15px;
   padding-bottom: 17px;
@@ -152,7 +143,8 @@ const ButtonSubmit = styled.button<{isSubmitting: boolean}>`
   margin-bottom: 15px;
   color: #ffffff;
   font-weight: 400;
-  background-color: ${({isSubmitting}) => (isSubmitting ? '#23527c' : '#48bbff')};
+  background-color: ${({ isSubmitting }) =>
+    isSubmitting ? "#23527c" : "#48bbff"};
   cursor: pointer;
 
   &:hover {

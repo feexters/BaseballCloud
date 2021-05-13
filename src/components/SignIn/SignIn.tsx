@@ -3,88 +3,81 @@ import { SignInData } from "lib/interfaces";
 import React, { useEffect } from "react";
 import { Field, Form } from "react-final-form";
 import styled from "styled-components";
-import { BrowserRouter as Router, useHistory } from "react-router-dom";
-import { useAppDispatch, useAppSelector} from "lib/hooks";
+import { useHistory } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "lib/hooks";
 import { authSingIn } from "store";
 import { finishAuthSubmitting } from "store/slices";
+import { LoginLayout } from "layouts";
 
 const SignIn = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const { submit } = useAppSelector(state => state.auth);
+  const { submit } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(finishAuthSubmitting(''))
+    dispatch(finishAuthSubmitting(""));
   }, [dispatch]);
 
   const onSubmit = ({ email, password }: SignInData) => {
-    dispatch(authSingIn({email, password}));
+    dispatch(authSingIn({ email, password }));
   };
 
   return (
-    <Router>
-      <Wrap>
-        <Title>Welcome to BaseballCloud!</Title>
-        <Subtitle>Sign into your account here:</Subtitle>
-        <Form
-          onSubmit={onSubmit}
-          initialValues={{ email: "", password: "" }}
-          render={({ form }) => (
-            <>
-              <InputWrap>
-                <Icon className="fas fa-user"></Icon>
-                <Field
-                  name="email"
-                  type="email"
-                  title="Email"
-                  placeholder={"Email"}
-                  component={InputLogin}
-                />
-              </InputWrap>
-              <InputWrap>
-                <Icon className="fas fa-lock"></Icon>
-                <Field
-                  name="password"
-                  title="Password"
-                  placeholder={"Password"}
-                  type="password"
-                  component={InputLogin}
-                />
-              </InputWrap>
+    <LoginLayout>
+      <Title>Welcome to BaseballCloud!</Title>
+      <Subtitle>Sign into your account here:</Subtitle>
+      <Form
+        onSubmit={onSubmit}
+        initialValues={{ email: "", password: "" }}
+        render={({ form }) => (
+          <>
+            <InputWrap>
+              <Icon className="fas fa-user"></Icon>
+              <Field
+                name="email"
+                type="email"
+                title="Email"
+                placeholder={"Email"}
+                component={InputLogin}
+              />
+            </InputWrap>
+            <InputWrap>
+              <Icon className="fas fa-lock"></Icon>
+              <Field
+                name="password"
+                title="Password"
+                placeholder={"Password"}
+                type="password"
+                component={InputLogin}
+              />
+            </InputWrap>
 
-              {submit.result && <ErrorValidation>{submit.result}</ErrorValidation>}
-              <ButtonSubmit isSubmitting={submit.status} onClick={form.submit} type="submit" disabled={submit.status}>
-                Sign In
-              </ButtonSubmit>
-            </>
-          )}
-        />
-        <ForgotLink onClick={() => history.push("/forgotpassword")}>
-          Forgotten password?
-        </ForgotLink>
-        <Footer>
-          Don’t have an account?
-          <SignUpLink onClick={() => history.push("/registration")}>
-            Sign Up
-          </SignUpLink>
-        </Footer>
-      </Wrap>
-    </Router>
+            {submit.result && (
+              <ErrorValidation>{submit.result}</ErrorValidation>
+            )}
+            <ButtonSubmit
+              isSubmitting={submit.status}
+              onClick={form.submit}
+              type="submit"
+              disabled={submit.status}
+            >
+              Sign In
+            </ButtonSubmit>
+          </>
+        )}
+      />
+      <ForgotLink onClick={() => history.push("/forgotpassword")}>
+        Forgotten password?
+      </ForgotLink>
+      <Footer>
+        Don’t have an account?
+        <SignUpLink onClick={() => history.push("/registration")}>
+          Sign Up
+        </SignUpLink>
+      </Footer>
+    </LoginLayout>
   );
 };
-
-const Wrap = styled.div`
-  width: 100%;
-  max-width: 450px;
-  padding: 16px;
-  background: hsla(0, 0%, 100%, 0.8);
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  border-radius: 8px;
-  box-shadow: 0 0 20px rgb(0 0 0 / 40%);
-  backdrop-filter: blur(5px);
-`;
 
 const Title = styled.h1`
   font-size: 2.4rem;
@@ -137,7 +130,7 @@ const Icon = styled.i`
   bottom: 0;
 `;
 
-const ButtonSubmit = styled.button<{isSubmitting: boolean}>`
+const ButtonSubmit = styled.button<{ isSubmitting: boolean }>`
   width: 100%;
   padding-top: 15px;
   padding-bottom: 17px;
@@ -147,7 +140,8 @@ const ButtonSubmit = styled.button<{isSubmitting: boolean}>`
   margin-bottom: 15px;
   color: #ffffff;
   font-weight: 400;
-  background-color: ${({isSubmitting}) => (isSubmitting ? '#23527c' : '#48bbff')};
+  background-color: ${({ isSubmitting }) =>
+    isSubmitting ? "#23527c" : "#48bbff"};
   cursor: pointer;
 
   &:hover {

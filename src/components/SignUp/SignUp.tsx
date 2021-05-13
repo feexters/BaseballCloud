@@ -4,10 +4,11 @@ import { Validation } from "lib/utils";
 import React, { useEffect, useState } from "react";
 import { Field, Form } from "react-final-form";
 import styled from "styled-components";
-import { BrowserRouter as Router, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { SuccessIcon } from "assets";
 import { useAppDispatch, useAppSelector } from "lib/hooks";
 import { authSingUp, finishAuthSubmitting } from "store";
+import { LoginLayout } from "layouts";
 
 const SignIn = () => {
   const [isPlayer, setIsPlayer] = useState(true);
@@ -44,150 +45,137 @@ const SignIn = () => {
   };
 
   return (
-    <Router>
-      <Wrap>
-        <RegistrationSwitch>
-          {isPlayer ? (
-            <>
-              <SwitchButton
-                isActive
-                onClick={() => {
-                  setIsPlayer(true);
-                }}
-              >
-                <ButtonIcon>
-                  <SuccessIcon />
-                </ButtonIcon>
-                Sign Up as Player
-              </SwitchButton>
-              <SwitchButton
-                onClick={() => {
-                  setIsPlayer(false);
-                }}
-              >
-                Sign Up as Scout
-              </SwitchButton>
-            </>
-          ) : (
-            <>
-              <SwitchButton
-                onClick={() => {
-                  setIsPlayer(true);
-                }}
-              >
-                Sign Up as Player
-              </SwitchButton>
-              <SwitchButton
-                isActive
-                onClick={() => {
-                  setIsPlayer(false);
-                }}
-              >
-                <ButtonIcon>
-                  <SuccessIcon />
-                </ButtonIcon>
-                Sign Up as Scout
-              </SwitchButton>
-            </>
-          )}
-        </RegistrationSwitch>
-        <RegistrationInfo>
-          {isPlayer ? (
-            <>
-              <Title>Player</Title>
-              <Subtitle>
-                Players have their own profile within the system and plan on
-                having data collected.
-              </Subtitle>
-            </>
-          ) : (
-            <>
-              <Title>Scouts</Title>
-              <Subtitle>
-                Coaches and scouts can view players in the system but do not
-                have their own profile.
-              </Subtitle>
-            </>
-          )}
-        </RegistrationInfo>
-        <Form
-          onSubmit={onSubmit}
-          validate={onValidate}
-          initialValues={{ email: "", password: "", password_confirmation: "" }}
-          render={({ form }) => (
-            <>
-              <InputWrap>
-                <Icon className="fas fa-user"></Icon>
-                <Field
-                  name="email"
-                  type="email"
-                  title="Email"
-                  placeholder={"Email"}
-                  onBlur={() => {}}
-                  component={InputLogin}
-                />
-                {submit.result && (
-                  <ErrorValidation>{submit.result}</ErrorValidation>
-                )}
-              </InputWrap>
-              <InputWrap>
-                <Icon className="fas fa-lock"></Icon>
-                <Field
-                  name="password"
-                  title="Password"
-                  placeholder={"Password"}
-                  type="password"
-                  onBlur={() => {}}
-                  component={InputLogin}
-                />
-              </InputWrap>
-              <InputWrap>
-                <Icon className="fas fa-check"></Icon>
-                <Field
-                  name="password_confirmation"
-                  title="Confirm"
-                  placeholder={"Confirm Password"}
-                  type="password"
-                  component={InputLogin}
-                />
-              </InputWrap>
+    <LoginLayout>
+      <RegistrationSwitch>
+        {isPlayer ? (
+          <>
+            <SwitchButton
+              isActive
+              onClick={() => {
+                setIsPlayer(true);
+              }}
+            >
+              <ButtonIcon>
+                <SuccessIcon />
+              </ButtonIcon>
+              Sign Up as Player
+            </SwitchButton>
+            <SwitchButton
+              onClick={() => {
+                setIsPlayer(false);
+              }}
+            >
+              Sign Up as Scout
+            </SwitchButton>
+          </>
+        ) : (
+          <>
+            <SwitchButton
+              onClick={() => {
+                setIsPlayer(true);
+              }}
+            >
+              Sign Up as Player
+            </SwitchButton>
+            <SwitchButton
+              isActive
+              onClick={() => {
+                setIsPlayer(false);
+              }}
+            >
+              <ButtonIcon>
+                <SuccessIcon />
+              </ButtonIcon>
+              Sign Up as Scout
+            </SwitchButton>
+          </>
+        )}
+      </RegistrationSwitch>
+      <RegistrationInfo>
+        {isPlayer ? (
+          <>
+            <Title>Player</Title>
+            <Subtitle>
+              Players have their own profile within the system and plan on
+              having data collected.
+            </Subtitle>
+          </>
+        ) : (
+          <>
+            <Title>Scouts</Title>
+            <Subtitle>
+              Coaches and scouts can view players in the system but do not have
+              their own profile.
+            </Subtitle>
+          </>
+        )}
+      </RegistrationInfo>
+      <Form
+        onSubmit={onSubmit}
+        validate={onValidate}
+        initialValues={{ email: "", password: "", password_confirmation: "" }}
+        render={({ form }) => (
+          <>
+            <InputWrap>
+              <Icon className="fas fa-user"></Icon>
+              <Field
+                name="email"
+                type="email"
+                title="Email"
+                placeholder={"Email"}
+                onBlur={() => {}}
+                component={InputLogin}
+              />
+              {submit.result && (
+                <ErrorValidation>{submit.result}</ErrorValidation>
+              )}
+            </InputWrap>
+            <InputWrap>
+              <Icon className="fas fa-lock"></Icon>
+              <Field
+                name="password"
+                title="Password"
+                placeholder={"Password"}
+                type="password"
+                onBlur={() => {}}
+                component={InputLogin}
+              />
+            </InputWrap>
+            <InputWrap>
+              <Icon className="fas fa-check"></Icon>
+              <Field
+                name="password_confirmation"
+                title="Confirm"
+                placeholder={"Confirm Password"}
+                type="password"
+                component={InputLogin}
+              />
+            </InputWrap>
 
-              <Legal>
-                By clicking Sign Up, you agree to our{" "}
-                <LegalLink>Terms of Service</LegalLink> and{" "}
-                <LegalLink>Privacy Policy.</LegalLink>
-              </Legal>
+            <Legal>
+              By clicking Sign Up, you agree to our{" "}
+              <LegalLink>Terms of Service</LegalLink> and{" "}
+              <LegalLink>Privacy Policy.</LegalLink>
+            </Legal>
 
-              <ButtonSubmit isSubmitting={submit.status} disabled={submit.status} onClick={form.submit}>
-                Sign Up
-              </ButtonSubmit>
-            </>
-          )}
-        />
+            <ButtonSubmit
+              isSubmitting={submit.status}
+              disabled={submit.status}
+              onClick={form.submit}
+            >
+              Sign Up
+            </ButtonSubmit>
+          </>
+        )}
+      />
 
-        <Footer>
-          Already registered?
-          <SignInLink onClick={() => history.push("/login")}>
-            Sign In
-          </SignInLink>
-        </Footer>
-      </Wrap>
-    </Router>
+      <Footer>
+        Already registered?
+        <SignInLink onClick={() => history.push("/login")}>Sign In</SignInLink>
+      </Footer>
+    </LoginLayout>
   );
 };
-
-const Wrap = styled.div`
-  width: 100%;
-  max-width: 450px;
-  padding: 16px;
-  background: hsla(0, 0%, 100%, 0.8);
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  border-radius: 8px;
-  box-shadow: 0 0 20px rgb(0 0 0 / 40%);
-  backdrop-filter: blur(5px);
-`;
 
 const RegistrationSwitch = styled.div`
   width: 100%;
@@ -288,7 +276,7 @@ const Icon = styled.i`
   bottom: 0;
 `;
 
-const ButtonSubmit = styled.button<{isSubmitting: boolean}>`
+const ButtonSubmit = styled.button<{ isSubmitting: boolean }>`
   width: 100%;
   padding-top: 15px;
   padding-bottom: 17px;
@@ -298,7 +286,8 @@ const ButtonSubmit = styled.button<{isSubmitting: boolean}>`
   margin-bottom: 15px;
   color: #ffffff;
   font-weight: 400;
-  background-color: ${({isSubmitting}) => (isSubmitting ? '#23527c' : '#48bbff')};
+  background-color: ${({ isSubmitting }) =>
+    isSubmitting ? "#23527c" : "#48bbff"};
   cursor: pointer;
 
   &:hover {

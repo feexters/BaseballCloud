@@ -25,11 +25,12 @@ const HomeRouter = () => {
     <Router>
       <Switch>
         <Route exact path="/">
-          {!isValid ? <SignIn /> : <Redirect to="/" />}
-          <Redirect to="/login" />
+          {/* {!isValid ? <SignIn /> : <Redirect to="/" />} */}
+          <SignIn />
         </Route>
         <Route path="/login">
-          {!isValid ? <SignIn /> : <Redirect to="/profile" />}
+          {/* {!isValid ? <SignIn /> : <Redirect to="/profile" />} */}
+          <SignIn />
         </Route>
         <Route path="/profile">
           {!isValid ? <Redirect to="/login" /> : <Profile />}
