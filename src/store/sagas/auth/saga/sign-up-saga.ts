@@ -1,24 +1,34 @@
 import {put, takeEvery, call, StrictEffect} from 'redux-saga/effects';
 import {AUTH_SIGN_UP} from '../actions/actions';
-import {SignUpData} from 'lib/interfaces';
-import {authSingIn} from '../actions';
+import {SignUpData, Headers} from 'lib/interfaces';
 import {fetchSignUp} from '../axios';
+import { authorized, finishAuthSubmitting, startAuthSubmitting } from 'store/slices';
 
 export interface SingUpWorker {
   type: string;
   payload: SignUpData;
 }
 
+interface Response {
+  headers: Headers;
+  status: number;
+}
+
 function* signUpWorker({
   payload,
-}: SingUpWorker): Generator<StrictEffect, void, string> {
+}: SingUpWorker): Generator<StrictEffect, void, Response> {
   try {
+    yield put(startAuthSubmitting());
+    
     const response = yield call(() => fetchSignUp(payload));
-    if (response === 'QueryFailedError') {
-      console.log('This user already exist');
+
+    if (response.status === 422) {
+      yield put(finishAuthSubmitting('Email has already been taken'));
+    } else if (response.status === 200 ) {
+      yield put(authorized({ status: true, headers: response.headers}));
+      yield put(finishAuthSubmitting(''));
     } else {
-      const {email, password} = payload;
-      yield put(authSingIn({email, password}));
+      yield put(finishAuthSubmitting(''));
     }
     
   } catch (e) {

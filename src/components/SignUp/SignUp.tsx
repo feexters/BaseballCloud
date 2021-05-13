@@ -1,21 +1,34 @@
 import { InputLogin } from "ui";
-import {SignUpData } from "lib/interfaces";
+import { SignUpData } from "lib/interfaces";
 import { Validation } from "lib/utils";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Field, Form } from "react-final-form";
 import styled from "styled-components";
 import { BrowserRouter as Router, useHistory } from "react-router-dom";
 import { SuccessIcon } from "assets";
+import { useAppDispatch, useAppSelector } from "lib/hooks";
+import { authSingUp, finishAuthSubmitting } from "store";
 
 const SignIn = () => {
   const [isPlayer, setIsPlayer] = useState(true);
   const history = useHistory();
+  const dispatch = useAppDispatch();
 
-  const onValidate = ({ email, password, confirm }: SignUpData) => {
+  const { submit } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(finishAuthSubmitting(""));
+  }, [dispatch]);
+
+  const onValidate = ({
+    email,
+    password,
+    password_confirmation,
+  }: SignUpData) => {
     const errors = {
       email: Validation.email(email),
       password: Validation.password(password),
-      confirm: Validation.confirm(password, confirm),
+      confirm: Validation.confirm(password, password_confirmation),
     };
 
     if (errors.email || errors.password || errors.confirm) {
@@ -25,8 +38,9 @@ const SignIn = () => {
     }
   };
 
-  const onSubmit = ({ email, password, confirm }: SignUpData) => {
-    // onValidate({ email, password });
+  const onSubmit = (user: SignUpData) => {
+    user.role = isPlayer ? "player" : "scout";
+    dispatch(authSingUp(user));
   };
 
   return (
@@ -99,7 +113,7 @@ const SignIn = () => {
         <Form
           onSubmit={onSubmit}
           validate={onValidate}
-          initialValues={{ email: "", password: "", confirm: "" }}
+          initialValues={{ email: "", password: "", password_confirmation: "" }}
           render={({ form }) => (
             <>
               <InputWrap>
@@ -112,6 +126,9 @@ const SignIn = () => {
                   onBlur={() => {}}
                   component={InputLogin}
                 />
+                {submit.result && (
+                  <ErrorValidation>{submit.result}</ErrorValidation>
+                )}
               </InputWrap>
               <InputWrap>
                 <Icon className="fas fa-lock"></Icon>
@@ -127,7 +144,7 @@ const SignIn = () => {
               <InputWrap>
                 <Icon className="fas fa-check"></Icon>
                 <Field
-                  name="confirm"
+                  name="password_confirmation"
                   title="Confirm"
                   placeholder={"Confirm Password"}
                   type="password"
@@ -141,7 +158,9 @@ const SignIn = () => {
                 <LegalLink>Privacy Policy.</LegalLink>
               </Legal>
 
-              <ButtonSubmit onClick={form.submit}>Sign Up</ButtonSubmit>
+              <ButtonSubmit isSubmitting={submit.status} disabled={submit.status} onClick={form.submit}>
+                Sign Up
+              </ButtonSubmit>
             </>
           )}
         />
@@ -255,8 +274,9 @@ const InputWrap = styled.div`
   width: 100%;
   position: relative;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
+  margin-bottom: 15px;
 `;
 
 const Icon = styled.i`
@@ -268,7 +288,7 @@ const Icon = styled.i`
   bottom: 0;
 `;
 
-const ButtonSubmit = styled.button`
+const ButtonSubmit = styled.button<{isSubmitting: boolean}>`
   width: 100%;
   padding-top: 15px;
   padding-bottom: 17px;
@@ -278,7 +298,7 @@ const ButtonSubmit = styled.button`
   margin-bottom: 15px;
   color: #ffffff;
   font-weight: 400;
-  background-color: #48bbff;
+  background-color: ${({isSubmitting}) => (isSubmitting ? '#23527c' : '#48bbff')};
   cursor: pointer;
 
   &:hover {
@@ -298,6 +318,14 @@ const LegalLink = styled.span`
     color: #23527c;
     text-decoration: underline;
   }
+`;
+
+const ErrorValidation = styled.span`
+  font-size: 1.6rem;
+  align-self: flex-start;
+  margin-top: 8px;
+  margin-bottom: 2px;
+  color: #f05f62;
 `;
 
 export default SignIn;

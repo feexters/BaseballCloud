@@ -27,9 +27,7 @@ export async function fetchSignUp(user: SignUpData) {
   return await (
     await instance()
   )
-    .post("auth/sign_up", user)
-    .then((response) => {
-      return response.data.name;
-    })
-    .catch((e) => console.log(e));
+    .post("auth", user)
+    .then((response) =>  response)
+    .catch(error => error.response);
 }

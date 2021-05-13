@@ -52,7 +52,6 @@ const ErrorValidation = styled.span`
 `;
 const Wrap = styled.div`
   width: 100%;
-  margin-bottom: 15px;
   display: flex;
   flex-direction: column;
 `;
