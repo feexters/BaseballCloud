@@ -1,4 +1,4 @@
-export type {SignInData} from './SignInData';
-export type {SignUpData} from './SignUpData';
-export type {UserData} from './UserData';
-export type {Headers} from './Headers';
+export type {SignInData} from './sign-in-data';
+export type {SignUpData} from './sign-up-data';
+export type {UserData} from './user-data';
+export type {Headers} from './headers';
