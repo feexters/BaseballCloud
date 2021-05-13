@@ -15,7 +15,9 @@ const HomeRouter = () => {
   const { headers, isValid } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(validateToken());
+    if (headers["access-token"]) {
+      dispatch(validateToken());
+    }
   }, [headers, dispatch]);
 
   return (
@@ -32,11 +34,11 @@ const HomeRouter = () => {
           {!isValid ? <Redirect to="/profile" /> : <Profile />}
         </Route>
         <Route path="/registration">
-            <SignUp />
-          </Route>
-          <Route path="/forgotpassword">
-            <ForgotPassword />
-          </Route>
+          <SignUp />
+        </Route>
+        <Route path="/forgotpassword">
+          <ForgotPassword />
+        </Route>
       </Switch>
     </Router>
   );

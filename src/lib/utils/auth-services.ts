@@ -1,42 +1,30 @@
 import { Headers } from "lib/interfaces";
+import getCookie from "./get-cookie";
 
 class Auth {
   TOKEN = "token";
   CLIENT = "client";
   UID = "uid";
 
-  constructor() {
-    if (!localStorage.getItem(this.TOKEN)) {
-      localStorage.setItem(this.TOKEN, "");
-    }
-
-    if (!localStorage.getItem(this.CLIENT)) {
-      localStorage.setItem(this.CLIENT, "");
-    }
-
-    if (!localStorage.getItem(this.UID)) {
-      localStorage.setItem(this.UID, "");
-    }
-  }
-
   getHeaders(): Headers {
     return {
-      "access-token": localStorage.getItem(this.TOKEN)!,
-      client: localStorage.getItem(this.CLIENT)!,
-      uid: localStorage.getItem(this.UID)!,
+      "access-token": getCookie(this.TOKEN),
+      client:         getCookie(this.CLIENT)!,
+      uid:            getCookie(this.UID)!,
     };
   }
 
   deleteHeaders() {
-    localStorage.getItem(this.TOKEN)!;
-    localStorage.getItem(this.CLIENT)!;
-    localStorage.getItem(this.UID)!;
+    document.cookie = `${this.TOKEN}=; max-age=0}`
+    document.cookie = `${this.CLIENT}=; max-age=0}`
+    document.cookie = `${this.UID}=; max-age=0}`
   }
 
   setHeaders(headers: Headers) {
-    localStorage.setItem(this.TOKEN, headers["access-token"]);
-    localStorage.setItem(this.CLIENT, headers.client);
-    localStorage.setItem(this.UID, headers.uid);
+    console.log(document.cookie)
+    document.cookie = `${this.TOKEN}=${headers["access-token"]}; secure`
+    document.cookie = `${this.CLIENT}=${headers.client}; secure`
+    document.cookie = `${this.UID}=${headers.uid}; secure`
   }
 }
 
