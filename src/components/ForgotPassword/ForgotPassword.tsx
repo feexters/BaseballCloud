@@ -1,17 +1,25 @@
 import { InputLogin } from "ui";
 import { SignInData } from "lib/interfaces";
 import { Validation } from "lib/utils";
-import React from "react";
+import React, { useEffect } from "react";
 import { Field, Form } from "react-final-form";
 import styled from "styled-components";
 import { BrowserRouter as Router, useHistory } from "react-router-dom";
-import { FORM_ERROR } from "final-form";
+import { useAppDispatch, useAppSelector } from "lib/hooks";
+import { forgotPassword } from 'store/sagas'
+import { finishAuthSubmitting } from "store";
 
 const ForgotPassword = () => {
   const history = useHistory();
+  const dispatch = useAppDispatch();
+  const { submit } = useAppSelector(state => state.auth);
+
+  useEffect(() => {
+    dispatch(finishAuthSubmitting(''))
+  }, [dispatch]);
 
   const onSubmit = ({ email }: SignInData) => {
-    return { [FORM_ERROR]: `Unable to find user with email '${email}'.` };
+    dispatch(forgotPassword(email))
   };
 
   const onValidate = ({ email }: {email: string}) => {
@@ -38,7 +46,7 @@ const ForgotPassword = () => {
           onSubmit={onSubmit}
           validate={onValidate}
           initialValues={{ email: "" }}
-          render={({ form, submitError }) => (
+          render={({ form }) => (
             <>
               <InputWrap>
                 <Icon className="fas fa-user"></Icon>
@@ -46,13 +54,14 @@ const ForgotPassword = () => {
                   name="email"
                   type="email"
                   title="Email"
+                  onBlur={() => {}}
                   placeholder={"Email"}
                   component={InputLogin}
                 />
               </InputWrap>
 
-              {submitError && <ErrorValidation>{submitError}</ErrorValidation>}
-              <ButtonSubmit onClick={form.submit} type="submit">
+              {submit.result && <ErrorValidation>{submit.result}</ErrorValidation>}
+              <ButtonSubmit isSubmitting={submit.status} disabled={submit.status} onClick={form.submit} type="submit">
                 Submit
               </ButtonSubmit>
             </>
@@ -133,7 +142,7 @@ const Icon = styled.i`
   bottom: 0;
 `;
 
-const ButtonSubmit = styled.button`
+const ButtonSubmit = styled.button<{isSubmitting: boolean}>`
   width: 100%;
   padding-top: 15px;
   padding-bottom: 17px;
@@ -143,7 +152,7 @@ const ButtonSubmit = styled.button`
   margin-bottom: 15px;
   color: #ffffff;
   font-weight: 400;
-  background-color: #48bbff;
+  background-color: ${({isSubmitting}) => (isSubmitting ? '#23527c' : '#48bbff')};
   cursor: pointer;
 
   &:hover {

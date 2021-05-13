@@ -31,3 +31,17 @@ export async function fetchSignUp(user: SignUpData) {
     .then((response) =>  response)
     .catch(error => error.response);
 }
+
+export async function fetchForgotPassword(email: string) {
+  const data = {
+    email: email,
+    redirect_url: "https://baseballcloud-front.herokuapp.com/resetpassword"
+  }
+
+  return await (
+    await instance()
+  )
+    .post("auth/password", data)
+    .then((response) =>  response.status)
+    .catch(error => error.response.status);
+}

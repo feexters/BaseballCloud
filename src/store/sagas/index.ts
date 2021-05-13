@@ -1,2 +1,2 @@
 export {default as rootSaga} from './sagas';
-export {authSingIn, authSingUp, validateToken} from './auth';
+export * from './auth';

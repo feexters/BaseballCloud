@@ -1,2 +1,2 @@
-export {watchSignIn, watchSignUp} from './saga';
-export {authSingIn, authSingUp, validateToken} from './actions';
+export {watchSignIn, watchSignUp, watchForgotPassword, watchValidateToken} from './saga';
+export * from './actions';
