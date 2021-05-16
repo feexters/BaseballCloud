@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
-import { auth } from 'store/slices';
+import { auth, user } from 'store/slices';
 
 export const reducer = combineReducers({
   auth: auth.reducer,
+  user: user.reducer,
 });

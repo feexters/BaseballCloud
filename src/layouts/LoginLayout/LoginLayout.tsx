@@ -33,6 +33,7 @@ const Wrap = styled.div`
   background-position: top center;
   background-image: url(${bgImage});
   background-size: cover;
+  overflow: auto;
 `;
 
 export default LoginLayout;

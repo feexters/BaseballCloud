@@ -27,6 +27,7 @@ const Wrap = styled.footer`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-top: 1px solid rgba(0,0,0,.1);
 
   @media (max-width: ${maxWidth}px) {
     flex-direction: column;
