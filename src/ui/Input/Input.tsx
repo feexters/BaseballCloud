@@ -51,6 +51,16 @@ const Input = styled.input`
   ::placeholder {
     transition: color ease 0.5s;
   }
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+  }
+
+  &[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+  }
 `;
 
 const Label = styled.label`

@@ -1,5 +1,6 @@
 import { useAppSelector } from "lib/hooks";
 import { UserData } from "lib/interfaces";
+import { Validation } from "lib/utils";
 import React from "react";
 import { Field, Form } from "react-final-form";
 import styled from "styled-components";
@@ -9,11 +10,28 @@ import { Avatar } from "./components";
 const ProfileSettings = () => {
   const { submit, data } = useAppSelector((state) => state.user);
 
-  const onSubmit = () => {
+  const onSubmit = (user: UserData) => {
     console.log("submit");
   };
 
   const onValidate = (user: UserData) => {
+    const errors = {
+      first_name: Validation.validation(user.first_name, "First Name "),
+      last_name: Validation.validation(user.last_name, "Last Name "),
+      position: Validation.validation(user.position, "Position "),
+      age: Validation.age(user.age),
+      feet: Validation.feet(user.feet),
+      inches: Validation.inches(user.inches),
+      weight: Validation.weight(user.weight),
+      throws_hand: Validation.validation(user.throws_hand, "Throws "),
+      bats_hand: Validation.validation(user.bats_hand, "Bats "),
+    };
+
+    for (let key in errors) {
+      if (key) {
+        return errors;
+      }
+    }
     return {};
   };
 
@@ -46,7 +64,7 @@ const ProfileSettings = () => {
         onSubmit={onSubmit}
         validate={onValidate}
         initialValues={{ ...data }}
-        render={({ form }) => (
+        render={({ form, values }) => (
           <>
             <Field name="avatar" onBlur={() => {}} component={Avatar} />
 
@@ -97,6 +115,7 @@ const ProfileSettings = () => {
                 name="age"
                 title="Age *"
                 placeholder="Age *"
+                type="number"
                 onBlur={() => {}}
                 component={Input}
               />
@@ -108,6 +127,7 @@ const ProfileSettings = () => {
                   name="feet"
                   title="Feet *"
                   placeholder="Feet *"
+                  type="number"
                   onBlur={() => {}}
                   component={Input}
                 />
@@ -117,6 +137,7 @@ const ProfileSettings = () => {
                   name="inches"
                   title="Inches"
                   placeholder="Inches"
+                  type="number"
                   onBlur={() => {}}
                   component={Input}
                 />
@@ -128,6 +149,7 @@ const ProfileSettings = () => {
                 name="weight"
                 title="Weight *"
                 placeholder="Weight *"
+                type="number"
                 onBlur={() => {}}
                 component={Input}
               />
@@ -216,6 +238,9 @@ const ProfileSettings = () => {
               />
             </InputWrap>
 
+            {!Validation.userFieldsRequired(values) && (
+              <ErrorValidation>* Fill out the required fields</ErrorValidation>
+            )}
             <Pair>
               <PairWrap>
                 <ButtonCancel
@@ -298,10 +323,18 @@ const Pair = styled.div`
 
 const PairWrap = styled.div`
   width: 48%;
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 10px;
+`;
+
+const ErrorValidation = styled.span`
+  display: block;
+  font-size: 1.6rem;
+  align-self: flex-start;
+  margin-top: 8px;
+  color: #f05f62;
   margin-bottom: 10px;
 `;
 

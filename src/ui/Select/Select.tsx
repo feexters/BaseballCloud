@@ -16,7 +16,7 @@ interface SelectProps {
 const Select: React.FC<SelectProps> = ({
   values,
   customValue = false,
-  props: { input, ...rest },
+  props: { input, meta, ...rest },
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [hoverId, setHoverId] = useState(values.length ? values[0].id : "");
@@ -56,49 +56,54 @@ const Select: React.FC<SelectProps> = ({
   };
 
   return (
-    <Wrap
-      isOpen={isOpen}
-      onClick={onOpen}
-      onBlur={onClose}
-      tabIndex={0}
-      id={input.name}
-    >
-      <Label htmlFor={input.name}>{rest.placeholder}</Label>
+    <>
+      <Wrap
+        isOpen={isOpen}
+        onClick={onOpen}
+        onBlur={onClose}
+        tabIndex={0}
+        id={input.name}
+      >
+        <Label htmlFor={input.name}>{rest.placeholder}</Label>
 
-      <Toggle onKeyPress={(event) => onPressEnter(event)}>
-        {customValue ? (
-          <Input {...input} {...rest} ref={inputRef} autoComplete={"off"} />
-        ) : (
-          <Text>{input.value ? input.value : rest.placeholder}</Text>
-        )}
-        <ArrowWrap isOpen={isOpen} onClick={onToggle}>
-          <SelectArrowIcon />
-        </ArrowWrap>
-      </Toggle>
-      {isOpen && (
-        <Selection>
-          {customValue && input.value && (
-            <SelectionItem
-              isActive={createValueId === hoverId}
-              onClick={() => onClick(input.value)}
-              onMouseEnter={() => setHoverId(createValueId)}
-            >
-              <Text>{`Create option "${input.value}"`}</Text>
-            </SelectionItem>
+        <Toggle onKeyPress={(event) => onPressEnter(event)}>
+          {customValue ? (
+            <Input {...input} {...rest} ref={inputRef} autoComplete={"off"} />
+          ) : (
+            <Text>{input.value ? input.value : rest.placeholder}</Text>
           )}
-          {values.map((value) => (
-            <SelectionItem
-              isActive={value.id === hoverId || value.name === input.value}
-              onClick={() => onClick(value.name)}
-              onMouseEnter={() => setHoverId(value.id)}
-              key={value.id}
-            >
-              <Text>{value.name ? value.name : "-"}</Text>
-            </SelectionItem>
-          ))}
-        </Selection>
+          <ArrowWrap isOpen={isOpen} onClick={onToggle}>
+            <SelectArrowIcon />
+          </ArrowWrap>
+        </Toggle>
+        {isOpen && (
+          <Selection>
+            {customValue && input.value && (
+              <SelectionItem
+                isActive={createValueId === hoverId}
+                onClick={() => onClick(input.value)}
+                onMouseEnter={() => setHoverId(createValueId)}
+              >
+                <Text>{`Create option "${input.value}"`}</Text>
+              </SelectionItem>
+            )}
+            {values.map((value) => (
+              <SelectionItem
+                isActive={value.id === hoverId || value.name === input.value}
+                onClick={() => onClick(value.name)}
+                onMouseEnter={() => setHoverId(value.id)}
+                key={value.id}
+              >
+                <Text>{value.name ? value.name : "-"}</Text>
+              </SelectionItem>
+            ))}
+          </Selection>
+        )}
+      </Wrap>
+      {meta.touched && meta.error && (
+        <ErrorValidation>{meta.error}</ErrorValidation>
       )}
-    </Wrap>
+    </>
   );
 };
 
@@ -118,6 +123,13 @@ const Wrap = styled.div<{ isOpen: boolean }>`
       "& > label {" +
       "transform: translate(-16px, -8px) scale(1.15);" +
       "visibility: visible;};"}
+`;
+
+const ErrorValidation = styled.span`
+  font-size: 1.6rem;
+  align-self: flex-start;
+  color: #f05f62;
+  margin-top: 8px;
 `;
 
 const Toggle = styled.div`
