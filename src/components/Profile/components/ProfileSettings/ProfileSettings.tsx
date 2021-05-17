@@ -1,4 +1,4 @@
-import { useAppSelector } from "lib/hooks";
+import { useAppDispatch, useAppSelector } from "lib/hooks";
 import { UserData } from "lib/interfaces";
 import { Validation } from "lib/utils";
 import React from "react";
@@ -6,12 +6,16 @@ import { Field, Form } from "react-final-form";
 import styled from "styled-components";
 import { Input, Select, SelectMultiple, TextArea } from "ui";
 import { Avatar } from "./components";
+import { setUserData } from "store";
+import { FacilitiesData } from "lib/interfaces/facilities-data";
 
-const ProfileSettings = () => {
+const ProfileSettings: React.FC<{onToggle(): void}> = ({onToggle}) => {
   const { submit, data } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
 
   const onSubmit = (user: UserData) => {
-    console.log("submit");
+    dispatch(setUserData(user));
+    onToggle();
   };
 
   const onValidate = (user: UserData) => {
@@ -27,8 +31,10 @@ const ProfileSettings = () => {
       bats_hand: Validation.validation(user.bats_hand, "Bats "),
     };
 
-    for (let key in errors) {
-      if (key) {
+    let key: keyof typeof errors;
+
+    for (key in errors) {
+      if (errors[key]) {
         return errors;
       }
     }
@@ -82,8 +88,8 @@ const ProfileSettings = () => {
                 <PairWrap>
                   <Field
                     name="last_name"
-                    title="Label Name *"
-                    placeholder={"Label Name *"}
+                    title="Last Name *"
+                    placeholder={"Last Name *"}
                     onBlur={() => {}}
                     component={Input}
                   />
@@ -120,7 +126,6 @@ const ProfileSettings = () => {
                   title="Age *"
                   placeholder="Age *"
                   type="number"
-                  onBlur={() => {}}
                   component={Input}
                 />
               </InputWrap>
@@ -132,7 +137,6 @@ const ProfileSettings = () => {
                     title="Feet *"
                     placeholder="Feet *"
                     type="number"
-                    onBlur={() => {}}
                     component={Input}
                   />
                 </PairWrap>
@@ -142,7 +146,6 @@ const ProfileSettings = () => {
                     title="Inches"
                     placeholder="Inches"
                     type="number"
-                    onBlur={() => {}}
                     component={Input}
                   />
                 </PairWrap>
@@ -154,7 +157,6 @@ const ProfileSettings = () => {
                   title="Weight *"
                   placeholder="Weight *"
                   type="number"
-                  onBlur={() => {}}
                   component={Input}
                 />
               </InputWrap>
@@ -217,11 +219,9 @@ const ProfileSettings = () => {
                       input={input}
                       placeholder="Facility"
                       customValue={false}
-                      values={[
-                        { id: "0", name: "Example" },
-                        { id: "2", name: "Team" },
-                        { id: "3", name: "dscsd" },
-                      ]}
+                      values={input.value.facilities?.map((elem: FacilitiesData) => {
+                        return { id: elem.id, name: elem.u_name };
+                      }) || []}
                     />
                   )}
                 </Field>
@@ -261,7 +261,7 @@ const ProfileSettings = () => {
                   <ButtonSubmit
                     isSubmitting={submit.status}
                     disabled={submit.status}
-                    onClick={form.submit}
+                    onClick={() => form.submit()}
                   >
                     Save
                   </ButtonSubmit>
@@ -338,6 +338,7 @@ const PairWrap = styled.div`
   width: 48%;
   display: flex;
   flex-direction: column;
+  position: relative;
   align-items: center;
   margin-bottom: 10px;
 `;

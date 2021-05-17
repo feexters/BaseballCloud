@@ -1,17 +1,24 @@
 import { ArrowAccountIcon } from "assets";
-import React from "react";
+import { useAppSelector } from "lib/hooks";
+import { Validation } from "lib/utils";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { ProfileSettings } from "./components";
+import { ProfileInfo, ProfileSettings } from "./components";
 
 const Profile = () => {
+  const { user } = useAppSelector((state) => state);
+  const isEnoughData = Validation.userFieldsRequired(user.data);
+
+  const [isChangeForm, setIsChangeForm] = useState(!isEnoughData)
+
   return (
     <Wrap>
-      <ProfileSettings />
+      {!isChangeForm ? <ProfileInfo onToggle={() => setIsChangeForm(true)}/> : <ProfileSettings onToggle={() => setIsChangeForm(false)}/>}
 
       <Main>
         <StartWindow>
           <YourAccount>
-						<ArrowAccountIcon />
+            <ArrowAccountIcon />
             <YourAccountTitle>Your Account</YourAccountTitle>
             <YourAccountText>
               Changing your profile options lets you control how others see you
@@ -30,10 +37,11 @@ const Wrap = styled.div`
   height: 100%;
   overflow: hidden;
 
-  @media(max-width: 640px) {
+  @media (max-width: 640px) {
     flex-direction: column;
 
-    &> aside, &>main {
+    & > aside,
+    & > main {
       width: 100%;
       flex-direction: row;
     }
@@ -71,7 +79,7 @@ const YourAccountTitle = styled.h1`
   color: #667784;
   font-size: 32px;
   font-weight: 700;
-	margin-top: 17px;
+  margin-top: 17px;
   margin-bottom: 16px;
 `;
 const YourAccountText = styled.p`

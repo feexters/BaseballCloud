@@ -14,7 +14,6 @@ type InputProps = FieldRenderProps<string, any>;
 const Avatar: React.FC<InputProps> = ({ input }) => {
   const onSubmit = ({ file }: ImageData) => {
     if (file.name) {
-      console.log("submit");
       // dispatch(...)
     }
   };

@@ -13,7 +13,7 @@ export const user = createSlice({
     submit: {} as Submit,
   },
   reducers: {
-    setData(state, action: PayloadAction<UserData>) {
+    setUserData(state, action: PayloadAction<UserData>) {
       state.data = action.payload;
     },
     startUserSubmitting(state) {
@@ -26,5 +26,5 @@ export const user = createSlice({
   },
 });
 
-export const { startUserSubmitting, finishUserSubmitting, setData } =
+export const { startUserSubmitting, finishUserSubmitting, setUserData } =
   user.actions;
