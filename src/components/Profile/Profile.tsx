@@ -29,6 +29,15 @@ const Wrap = styled.div`
   display: flex;
   height: 100%;
   overflow: hidden;
+
+  @media(max-width: 640px) {
+    flex-direction: column;
+
+    &> aside, &>main {
+      width: 100%;
+      flex-direction: row;
+    }
+  }
 `;
 
 const Main = styled.main`

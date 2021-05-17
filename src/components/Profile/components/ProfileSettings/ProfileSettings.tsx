@@ -68,199 +68,206 @@ const ProfileSettings = () => {
           <>
             <Field name="avatar" onBlur={() => {}} component={Avatar} />
 
-            <NameInputs>
-              <PairWrap>
-                <Field
-                  name="first_name"
-                  title="First Name *"
-                  placeholder="First Name *"
-                  onBlur={() => {}}
-                  component={Input}
-                />
-              </PairWrap>
-              <PairWrap>
-                <Field
-                  name="last_name"
-                  title="Label Name *"
-                  placeholder={"Label Name *"}
-                  onBlur={() => {}}
-                  component={Input}
-                />
-              </PairWrap>
-            </NameInputs>
-            <InputWrap>
-              <Field name="position" placeholder="Position in Game *">
-                {(props) => <Select props={props} values={positions} />}
-              </Field>
-            </InputWrap>
-
-            <InputWrap>
-              <Field name="position2" placeholder="Secondary Position in Game">
-                {(props) => (
-                  <Select
-                    props={props}
-                    values={[{ id: "9", name: "" }, ...positions]}
+            <FieldsWrap>
+              <NameInputs>
+                <PairWrap>
+                  <Field
+                    name="first_name"
+                    title="First Name *"
+                    placeholder="First Name *"
+                    onBlur={() => {}}
+                    component={Input}
                   />
-                )}
-              </Field>
-            </InputWrap>
+                </PairWrap>
+                <PairWrap>
+                  <Field
+                    name="last_name"
+                    title="Label Name *"
+                    placeholder={"Label Name *"}
+                    onBlur={() => {}}
+                    component={Input}
+                  />
+                </PairWrap>
+              </NameInputs>
+              <InputWrap>
+                <Field name="position" placeholder="Position in Game *">
+                  {(props) => <Select props={props} values={positions} />}
+                </Field>
+              </InputWrap>
 
-            <TitleWrap>
-              <Title>Personal Info</Title>
-              <TitleLine />
-            </TitleWrap>
-
-            <InputWrap>
-              <Field
-                name="age"
-                title="Age *"
-                placeholder="Age *"
-                type="number"
-                onBlur={() => {}}
-                component={Input}
-              />
-            </InputWrap>
-
-            <Pair>
-              <PairWrap>
+              <InputWrap>
                 <Field
-                  name="feet"
-                  title="Feet *"
-                  placeholder="Feet *"
+                  name="position2"
+                  placeholder="Secondary Position in Game"
+                >
+                  {(props) => (
+                    <Select
+                      props={props}
+                      values={[{ id: "9", name: "" }, ...positions]}
+                    />
+                  )}
+                </Field>
+              </InputWrap>
+
+              <TitleWrap>
+                <Title>Personal Info</Title>
+                <TitleLine />
+              </TitleWrap>
+
+              <InputWrap>
+                <Field
+                  name="age"
+                  title="Age *"
+                  placeholder="Age *"
                   type="number"
                   onBlur={() => {}}
                   component={Input}
                 />
-              </PairWrap>
-              <PairWrap>
+              </InputWrap>
+
+              <Pair>
+                <PairWrap>
+                  <Field
+                    name="feet"
+                    title="Feet *"
+                    placeholder="Feet *"
+                    type="number"
+                    onBlur={() => {}}
+                    component={Input}
+                  />
+                </PairWrap>
+                <PairWrap>
+                  <Field
+                    name="inches"
+                    title="Inches"
+                    placeholder="Inches"
+                    type="number"
+                    onBlur={() => {}}
+                    component={Input}
+                  />
+                </PairWrap>
+              </Pair>
+
+              <InputWrap>
                 <Field
-                  name="inches"
-                  title="Inches"
-                  placeholder="Inches"
+                  name="weight"
+                  title="Weight *"
+                  placeholder="Weight *"
                   type="number"
                   onBlur={() => {}}
                   component={Input}
                 />
-              </PairWrap>
-            </Pair>
+              </InputWrap>
 
-            <InputWrap>
-              <Field
-                name="weight"
-                title="Weight *"
-                placeholder="Weight *"
-                type="number"
-                onBlur={() => {}}
-                component={Input}
-              />
-            </InputWrap>
+              <Pair>
+                <PairWrap>
+                  <Field name="throws_hand" placeholder="Throws *">
+                    {(props) => <Select props={props} values={hands} />}
+                  </Field>
+                </PairWrap>
+                <PairWrap>
+                  <Field name="bats_hand" placeholder="Bats *">
+                    {(props) => <Select props={props} values={hands} />}
+                  </Field>
+                </PairWrap>
+              </Pair>
 
-            <Pair>
-              <PairWrap>
-                <Field name="throws_hand" placeholder="Throws *">
-                  {(props) => <Select props={props} values={hands} />}
+              <TitleWrap>
+                <Title>School</Title>
+                <TitleLine />
+              </TitleWrap>
+
+              <InputWrap>
+                <Field name="school" placeholder="School">
+                  {(props) => (
+                    <Select customValue props={props} values={positions} />
+                  )}
                 </Field>
-              </PairWrap>
-              <PairWrap>
-                <Field name="bats_hand" placeholder="Bats *">
-                  {(props) => <Select props={props} values={hands} />}
+              </InputWrap>
+              <InputWrap>
+                <Field name="school_year" placeholder="School Year">
+                  {(props) => <Select props={props} values={schoolYear} />}
                 </Field>
-              </PairWrap>
-            </Pair>
+              </InputWrap>
+              <InputWrap>
+                <Field name="teams">
+                  {({ input }) => (
+                    <SelectMultiple
+                      input={input}
+                      placeholder="Team"
+                      values={[
+                        { id: "0", name: "Example" },
+                        { id: "2", name: "Team" },
+                        { id: "3", name: "dscsd" },
+                      ]}
+                    />
+                  )}
+                </Field>
+              </InputWrap>
 
-            <TitleWrap>
-              <Title>School</Title>
-              <TitleLine />
-            </TitleWrap>
+              <TitleWrap>
+                <Title>Facility</Title>
+                <TitleLine />
+              </TitleWrap>
 
-            <InputWrap>
-              <Field name="school" placeholder="School">
-                {(props) => (
-                  <Select customValue props={props} values={positions} />
-                )}
-              </Field>
-            </InputWrap>
-            <InputWrap>
-              <Field name="school_year" placeholder="School Year">
-                {(props) => <Select props={props} values={schoolYear} />}
-              </Field>
-            </InputWrap>
-            <InputWrap>
-              <Field name="teams">
-                {({ input }) => (
-                  <SelectMultiple
-                    input={input}
-                    placeholder="Team"
-                    values={[
-                      { id: "0", name: "Example" },
-                      { id: "2", name: "Team" },
-                      { id: "3", name: "dscsd" },
-                    ]}
-                  />
-                )}
-              </Field>
-            </InputWrap>
+              <InputWrap>
+                <Field name="facilities">
+                  {({ input }) => (
+                    <SelectMultiple
+                      input={input}
+                      placeholder="Facility"
+                      customValue={false}
+                      values={[
+                        { id: "0", name: "Example" },
+                        { id: "2", name: "Team" },
+                        { id: "3", name: "dscsd" },
+                      ]}
+                    />
+                  )}
+                </Field>
+              </InputWrap>
 
-            <TitleWrap>
-              <Title>Facility</Title>
-              <TitleLine />
-            </TitleWrap>
+              <TitleWrap>
+                <Title>About</Title>
+                <TitleLine />
+              </TitleWrap>
 
-            <InputWrap>
-              <Field name="facilities">
-                {({ input }) => (
-                  <SelectMultiple
-                    input={input}
-                    placeholder="Facility"
-                    customValue={false}
-                    values={[
-                      { id: "0", name: "Example" },
-                      { id: "2", name: "Team" },
-                      { id: "3", name: "dscsd" },
-                    ]}
-                  />
-                )}
-              </Field>
-            </InputWrap>
+              <InputWrap>
+                <Field
+                  name="biography"
+                  title="About"
+                  placeholder="Describe yourself in a few words"
+                  onBlur={() => {}}
+                  component={TextArea}
+                />
+              </InputWrap>
 
-            <TitleWrap>
-              <Title>About</Title>
-              <TitleLine />
-            </TitleWrap>
-
-            <InputWrap>
-              <Field
-                name="biography"
-                title="About"
-                placeholder="Describe yourself in a few words"
-                onBlur={() => {}}
-                component={TextArea}
-              />
-            </InputWrap>
-
-            {!Validation.userFieldsRequired(values) && (
-              <ErrorValidation>* Fill out the required fields</ErrorValidation>
-            )}
-            <Pair>
-              <PairWrap>
-                <ButtonCancel
-                  isSubmitting={submit.status}
-                  disabled={submit.status}
-                  onClick={() => form.reset()}
-                >
-                  Cancel
-                </ButtonCancel>
-              </PairWrap>
-              <PairWrap>
-                <ButtonSubmit
-                  isSubmitting={submit.status}
-                  disabled={submit.status}
-                  onClick={form.submit}
-                >
-                  Save
-                </ButtonSubmit>
-              </PairWrap>
-            </Pair>
+              {!Validation.userFieldsRequired(values) && (
+                <ErrorValidation>
+                  * Fill out the required fields
+                </ErrorValidation>
+              )}
+              <Pair>
+                <PairWrap>
+                  <ButtonCancel
+                    isSubmitting={submit.status}
+                    disabled={submit.status}
+                    onClick={() => form.reset()}
+                  >
+                    Cancel
+                  </ButtonCancel>
+                </PairWrap>
+                <PairWrap>
+                  <ButtonSubmit
+                    isSubmitting={submit.status}
+                    disabled={submit.status}
+                    onClick={form.submit}
+                  >
+                    Save
+                  </ButtonSubmit>
+                </PairWrap>
+              </Pair>
+            </FieldsWrap>
           </>
         )}
       />
@@ -274,7 +281,8 @@ const Wrap = styled.aside`
   max-height: 100%;
   background: #ffffff;
   height: auto;
-  display: block;
+  display: flex;
+  flex-direction: column;
   transition: all 0.1s;
   box-shadow: 0 2px 15px 0 rgb(0 0 0 / 10%);
   background: #fff;
@@ -282,6 +290,11 @@ const Wrap = styled.aside`
   padding: 16px;
   overflow: auto;
   z-index: 5;
+`;
+
+const FieldsWrap = styled.div`
+  width: 100%;
+  flex-direction: column;
 `;
 
 const InputWrap = styled.div`
