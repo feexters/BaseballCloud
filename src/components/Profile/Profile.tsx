@@ -9,26 +9,32 @@ const Profile = () => {
   const { user } = useAppSelector((state) => state);
   const isEnoughData = Validation.userFieldsRequired(user.data);
 
-  const [isChangeForm, setIsChangeForm] = useState(!isEnoughData)
+  const [isChangeForm, setIsChangeForm] = useState(!isEnoughData);
 
   return (
     <Wrap>
-      {!isChangeForm ? <ProfileInfo onToggle={() => setIsChangeForm(true)}/> : <ProfileSettings onToggle={() => setIsChangeForm(false)}/>}
+      {!isChangeForm ? (
+        <ProfileInfo onToggle={() => setIsChangeForm(true)} />
+      ) : (
+        <ProfileSettings onToggle={() => setIsChangeForm(false)} />
+      )}
 
       <Main>
-        {isEnoughData ? (<StartWindow>
-          <YourAccount>
-            <ArrowAccountIcon />
-            <YourAccountTitle>Your Account</YourAccountTitle>
-            <YourAccountText>
-              Changing your profile options lets you control how others see you
-              and your profile. These settings include things like your name,
-              personal info and school.
-            </YourAccountText>
-          </YourAccount>
-        </StartWindow>) :
-        <ProfileMain />
-        }
+        {isEnoughData ? (
+          <StartWindow>
+            <YourAccount>
+              <ArrowAccountIcon />
+              <YourAccountTitle>Your Account</YourAccountTitle>
+              <YourAccountText>
+                Changing your profile options lets you control how others see
+                you and your profile. These settings include things like your
+                name, personal info and school.
+              </YourAccountText>
+            </YourAccount>
+          </StartWindow>
+        ) : (
+          <ProfileMain />
+        )}
       </Main>
     </Wrap>
   );

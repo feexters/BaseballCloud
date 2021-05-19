@@ -55,8 +55,7 @@ const DropDown: React.FC<DropDownProps> = ({ items, onSelect, children }) => {
         <Icon isOpen={isOpen}>
           <DropDownIcon />
         </Icon>
-      </DropDownToggle>
-      {isOpen && (
+        {isOpen && (
         <DropDownWrap>
           <DropDownPanel>
             {items.map((item) => (
@@ -67,6 +66,7 @@ const DropDown: React.FC<DropDownProps> = ({ items, onSelect, children }) => {
           </DropDownPanel>
         </DropDownWrap>
       )}
+      </DropDownToggle>
     </Wrap>
   );
 };
@@ -119,6 +119,7 @@ const DropDownToggle = styled.div`
   white-space: nowrap;
   display: flex;
   align-items: center;
+  position: relative;
   cursor: pointer;
 `;
 
@@ -133,7 +134,7 @@ const DropDownWrap = styled.div`
   position: absolute;
   top: 100%;
   right: -25px;
-  /* left: -10px; */
+  /* left: -100px; */
 `;
 
 const Select = styled.div`
