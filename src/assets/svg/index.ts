@@ -8,3 +8,6 @@ export { HeightIcon } from './HeightIcon';
 export { WeightIcon } from './WeightIcon';
 export { ThrowIcon } from './ThrowIcon';
 export { BatsIcon } from './BatsIcon';
+export { ProgressIcon } from './ProgressIcon';
+export { DropDownIcon } from './DropDownIcon';
+export { SearchIcon } from './SearchIcon';

@@ -8,6 +8,8 @@ import { Input, Select, SelectMultiple, TextArea } from "ui";
 import { Avatar } from "./components";
 import { setUserData } from "store";
 import { FacilitiesData } from "lib/interfaces/facilities-data";
+import { toastr } from "react-redux-toastr";
+import { toastrProfileOptions } from "ui";
 
 const ProfileSettings: React.FC<{onToggle(): void}> = ({onToggle}) => {
   const { submit, data } = useAppSelector((state) => state.user);
@@ -16,6 +18,7 @@ const ProfileSettings: React.FC<{onToggle(): void}> = ({onToggle}) => {
   const onSubmit = (user: UserData) => {
     dispatch(setUserData(user));
     onToggle();
+    toastr.success('', '', toastrProfileOptions)
   };
 
   const onValidate = (user: UserData) => {

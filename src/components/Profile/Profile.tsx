@@ -3,7 +3,7 @@ import { useAppSelector } from "lib/hooks";
 import { Validation } from "lib/utils";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { ProfileInfo, ProfileSettings } from "./components";
+import { ProfileInfo, ProfileMain, ProfileSettings } from "./components";
 
 const Profile = () => {
   const { user } = useAppSelector((state) => state);
@@ -16,7 +16,7 @@ const Profile = () => {
       {!isChangeForm ? <ProfileInfo onToggle={() => setIsChangeForm(true)}/> : <ProfileSettings onToggle={() => setIsChangeForm(false)}/>}
 
       <Main>
-        <StartWindow>
+        {isEnoughData ? (<StartWindow>
           <YourAccount>
             <ArrowAccountIcon />
             <YourAccountTitle>Your Account</YourAccountTitle>
@@ -26,7 +26,9 @@ const Profile = () => {
               personal info and school.
             </YourAccountText>
           </YourAccount>
-        </StartWindow>
+        </StartWindow>) :
+        <ProfileMain />
+        }
       </Main>
     </Wrap>
   );
@@ -52,6 +54,8 @@ const Main = styled.main`
   background: #788b99;
   flex: 2;
   height: 100%;
+  overflow: auto;
+  flex-direction: column;
   width: calc(100vw - 220px);
 `;
 
