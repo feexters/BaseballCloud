@@ -86,7 +86,6 @@ const InputControl = styled.div`
 
 const AvatarWrap = styled.div`
   display: flex;
-  width: 100%;
   flex-direction: column;
   align-items: center;
   margin-bottom: 23px;

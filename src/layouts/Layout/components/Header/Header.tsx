@@ -37,20 +37,22 @@ const Header = () => {
       <LogoIcon />
       {isValid && (
         <NavigationWrap>
-          <NavigationItem
-            onClick={() => history.push(ROUTE_LEADERBOARD)}
-            isActive={location.pathname === ROUTE_LEADERBOARD}
-          >
-            Leaderboard
-          </NavigationItem>
-          <NavigationItem
-            onClick={() => history.push(ROUTE_NETWORK)}
-            isActive={location.pathname === ROUTE_NETWORK}
-          >
-            Network
-          </NavigationItem>
+          <NavigationList>
+            <NavigationItem
+              onClick={() => history.push(ROUTE_LEADERBOARD)}
+              isActive={location.pathname === ROUTE_LEADERBOARD}
+            >
+              Leaderboard
+            </NavigationItem>
+            <NavigationItem
+              onClick={() => history.push(ROUTE_NETWORK)}
+              isActive={location.pathname === ROUTE_NETWORK}
+            >
+              Network
+            </NavigationItem>
+          </NavigationList>
           <ProfileWrap>
-          <PlayerAvatar image={data.avatar}></PlayerAvatar>
+            <PlayerAvatar image={data.avatar}></PlayerAvatar>
             <ProfileMenu onClick={() => setIsDropDownOpen(!isDropDownOpen)}>
               {data.first_name && data.last_name
                 ? `${data.first_name} ${data.last_name}`
@@ -60,16 +62,18 @@ const Header = () => {
               </IconWrap>
             </ProfileMenu>
             <DropDownPanel
-            items={selectMenu}
-            isOpen={isDropDownOpen}
-            onSelect={onSelect}
-          />
+              items={selectMenu}
+              isOpen={isDropDownOpen}
+              onSelect={onSelect}
+            />
           </ProfileWrap>
         </NavigationWrap>
       )}
     </HeaderWrap>
   );
 };
+
+const maxWidth = "640px";
 
 const HeaderWrap = styled.header`
   width: 100%;
@@ -79,6 +83,14 @@ const HeaderWrap = styled.header`
   justify-content: space-between;
   color: #788b99;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+  @media (max-width: ${maxWidth}) {
+    justify-content: center;
+  }
+
+  @media (max-width: 400px) {
+    flex-direction: column;
+  }
 `;
 
 const ProfileMenu = styled.div`
@@ -96,6 +108,10 @@ const ProfileMenu = styled.div`
   }
 `;
 
+const NavigationList = styled.div`
+  display: flex;
+`;
+
 const ProfileWrap = styled.div`
   display: flex;
   position: relative;
@@ -105,6 +121,10 @@ const ProfileWrap = styled.div`
 const NavigationWrap = styled.div`
   display: flex;
   align-items: center;
+
+  @media (max-width: ${maxWidth}) {
+    flex-direction: column;
+  }
 `;
 
 const IconWrap = styled.div`

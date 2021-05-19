@@ -73,8 +73,8 @@ const ProfileSettings: React.FC<{onToggle(): void}> = ({onToggle}) => {
         onSubmit={onSubmit}
         validate={onValidate}
         initialValues={{ ...data }}
-        render={({ form, values }) => (
-          <>
+        render={({ form, values, handleSubmit }) => (
+          <UserForm onSubmit={handleSubmit}>
             <Field name="avatar" onBlur={() => {}} component={Avatar} />
 
             <FieldsWrap>
@@ -271,7 +271,7 @@ const ProfileSettings: React.FC<{onToggle(): void}> = ({onToggle}) => {
                 </PairWrap>
               </Pair>
             </FieldsWrap>
-          </>
+          </UserForm>
         )}
       />
     </Wrap>
@@ -294,6 +294,16 @@ const Wrap = styled.aside`
   overflow: auto;
   z-index: 5;
 `;
+
+const UserForm = styled.form`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  @media(max-width: 640px) {
+    flex-direction: row;
+  }
+`
 
 const FieldsWrap = styled.div`
   width: 100%;
