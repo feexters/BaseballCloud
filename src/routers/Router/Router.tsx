@@ -1,5 +1,6 @@
-import { ForgotPassword, SignIn, SignUp } from "components";
+import { LeaderBoard, Network } from "components";
 import { Profile } from "components/Profile";
+import { ROUTE_LEADERBOARD, ROUTE_LOGIN, ROUTE_MAIN, ROUTE_NETWORK, ROUTE_PROFILE } from "lib/const/routes";
 import { useAppDispatch, useAppSelector } from "lib/hooks";
 import { Auth } from "lib/utils";
 import React, { useEffect } from "react";
@@ -10,6 +11,7 @@ import {
   Switch,
 } from "react-router-dom";
 import { validateToken } from "store/sagas";
+import { LoginRoutes } from "./routes";
 
 const HomeRouter = () => {
   const dispatch = useAppDispatch();
@@ -24,21 +26,19 @@ const HomeRouter = () => {
   return (
     <Router>
       <Switch>
-        <Route exact path="/">
-          {!isValid ? <SignIn /> : <Redirect to="/profile" />}
+        <Route exact path={ROUTE_MAIN}>
+          {!isValid ? <Redirect to={ROUTE_LOGIN} /> : <Redirect to={ROUTE_PROFILE} />}
         </Route>
-        <Route path="/login">
-          {!isValid ? <SignIn /> : <Redirect to="/profile" />}
+        <Route path={ROUTE_PROFILE}>
+          {!isValid ? <Redirect to={ROUTE_LOGIN} /> : <Profile />}
         </Route>
-        <Route path="/profile">
-          {!isValid ? <Redirect to="/login" /> : <Profile />}
+        <Route path={ROUTE_NETWORK}>
+          {!isValid ? <Redirect to={ROUTE_NETWORK} /> : <Network />}
         </Route>
-        <Route path="/registration">
-          <SignUp />
+        <Route path={ROUTE_LEADERBOARD}>
+          {!isValid ? <Redirect to={ROUTE_LEADERBOARD} /> : <LeaderBoard />}
         </Route>
-        <Route path="/forgotpassword">
-          <ForgotPassword />
-        </Route>
+        <LoginRoutes />
       </Switch>
     </Router>
   );

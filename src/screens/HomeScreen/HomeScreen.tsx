@@ -1,5 +1,5 @@
 import React from "react";
-import { HomeRouter } from "routes";
+import { HomeRouter } from "routers";
 import styled from "styled-components";
 import { Layout } from "layouts";
 

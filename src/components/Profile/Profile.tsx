@@ -20,7 +20,7 @@ const Profile = () => {
       )}
 
       <Main>
-        {isEnoughData ? (
+        {!isEnoughData ? (
           <StartWindow>
             <YourAccount>
               <ArrowAccountIcon />
