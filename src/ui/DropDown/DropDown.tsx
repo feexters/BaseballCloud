@@ -51,7 +51,7 @@ const DropDown: React.FC<DropDownProps> = ({ items, onSelect, children }) => {
   return (
     <Wrap ref={dropDownRef}>
       <DropDownToggle onClick={onToggle}>
-        {children}{" "}
+        {children}
         <Icon isOpen={isOpen}>
           <DropDownIcon />
         </Icon>
@@ -125,7 +125,7 @@ const DropDownToggle = styled.div`
 const Icon = styled.div<{ isOpen: boolean }>`
   margin-left: 5px;
   transform: rotate(${({ isOpen }) => (isOpen ? "180deg" : "0deg")});
-  margin-top: ${({ isOpen }) => (isOpen ? "0" : "6px")};
+  margin-top: ${({ isOpen }) => (isOpen ? "0" : "3px")};
 `;
 
 const DropDownWrap = styled.div`

@@ -8,3 +8,4 @@ export { DropDown } from './DropDown';
 export { Toastr, toastrProfileOptions } from './Toastr';
 export { Table } from './Table';
 export { Pagination } from './Pagination';
+export { DateSelect } from './DateSelect';

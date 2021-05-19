@@ -11,3 +11,4 @@ export { BatsIcon } from './BatsIcon';
 export { ProgressIcon } from './ProgressIcon';
 export { DropDownIcon } from './DropDownIcon';
 export { SearchIcon } from './SearchIcon';
+export { DateIcon } from './DateIcon';
