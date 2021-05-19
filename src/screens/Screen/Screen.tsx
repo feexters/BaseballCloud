@@ -1,15 +1,18 @@
 import React from "react";
-import { HomeRouter } from "routers";
+import { Router } from "routers";
 import styled from "styled-components";
 import { Layout } from "layouts";
+import { BrowserRouter } from "react-router-dom";
 
-const HomeScreen = () => {
+const Screen = () => {
   return (
+    <BrowserRouter>
     <Wrap>
       <Layout>
-          <HomeRouter />
+          <Router />
       </Layout>
     </Wrap>
+    </BrowserRouter>
   );
 };
 
@@ -23,4 +26,4 @@ const Wrap = styled.div`
   }
 `;
 
-export default HomeScreen;
+export default Screen;

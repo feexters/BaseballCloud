@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "lib/hooks";
 import { authSingIn } from "store";
 import { finishAuthSubmitting } from "store/slices";
 import { LoginLayout } from "layouts";
+import { ROUTE_FORGOTPASSWORD, ROUTE_REGISTRATION } from "lib/const/routes";
 
 const SignIn = () => {
   const history = useHistory();
@@ -66,12 +67,12 @@ const SignIn = () => {
           </>
         )}
       />
-      <ForgotLink onClick={() => history.push("/forgotpassword")}>
+      <ForgotLink onClick={() => history.push(ROUTE_FORGOTPASSWORD)}>
         Forgotten password?
       </ForgotLink>
       <Footer>
         Don’t have an account?
-        <SignUpLink onClick={() => history.push("/registration")}>
+        <SignUpLink onClick={() => history.push(ROUTE_REGISTRATION)}>
           Sign Up
         </SignUpLink>
       </Footer>

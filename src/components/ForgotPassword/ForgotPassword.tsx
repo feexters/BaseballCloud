@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "lib/hooks";
 import { forgotPassword } from "store/sagas";
 import { finishAuthSubmitting } from "store";
 import { LoginLayout } from "layouts";
+import { ROUTE_LOGIN } from "lib/const/routes";
 
 const ForgotPassword = () => {
   const history = useHistory();
@@ -76,7 +77,7 @@ const ForgotPassword = () => {
       />
       <Footer>
         Remember password?
-        <SignInLink onClick={() => history.push("/login")}>Sign In</SignInLink>
+        <SignInLink onClick={() => history.push(ROUTE_LOGIN)}>Sign In</SignInLink>
       </Footer>
     </LoginLayout>
   );

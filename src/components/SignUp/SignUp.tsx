@@ -9,6 +9,7 @@ import { SuccessIcon } from "assets";
 import { useAppDispatch, useAppSelector } from "lib/hooks";
 import { authSingUp, finishAuthSubmitting } from "store";
 import { LoginLayout } from "layouts";
+import { ROUTE_LOGIN } from "lib/const/routes";
 
 const SignIn = () => {
   const [isPlayer, setIsPlayer] = useState(true);
@@ -171,7 +172,7 @@ const SignIn = () => {
 
       <Footer>
         Already registered?
-        <SignInLink onClick={() => history.push("/login")}>Sign In</SignInLink>
+        <SignInLink onClick={() => history.push(ROUTE_LOGIN)}>Sign In</SignInLink>
       </Footer>
     </LoginLayout>
   );

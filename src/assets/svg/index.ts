@@ -12,3 +12,4 @@ export { ProgressIcon } from './ProgressIcon';
 export { DropDownIcon } from './DropDownIcon';
 export { SearchIcon } from './SearchIcon';
 export { DateIcon } from './DateIcon';
+export { TriangleIcon } from './TriangleIcon';
