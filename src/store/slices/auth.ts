@@ -11,23 +11,26 @@ export const auth = createSlice({
   name: "auth",
   initialState: {
     authorized: false,
+    role: '',
     headers: {} as Headers,
     submit: {} as Submit,
     isValid: false,
+    validationLoading: true,
   },
   reducers: {
     authorized(
       state,
-      action: PayloadAction<{ status: boolean; headers: Headers }>
+      action: PayloadAction<{ status: boolean; headers: Headers, role: string }>
     ) {
-      const { status, headers } = action.payload;
+      const { status, headers, role } = action.payload;
       state.authorized = status;
-      Auth.setHeaders(headers)
+      Auth.setHeaders(headers);
       state.headers = headers;
+      state.role = role;
     },
     logout(state) {
       state.headers = {} as Headers;
-      Auth.deleteHeaders()
+      Auth.deleteHeaders();
       state.authorized = false;
     },
     setIsValidate(state, action: PayloadAction<boolean>) {
@@ -40,6 +43,12 @@ export const auth = createSlice({
       state.submit.status = false;
       state.submit.result = action.payload;
     },
+    startValidation(state) {
+      state.validationLoading = true;
+    },
+    finishValidation(state) {
+      state.validationLoading = false;
+    },
   },
 });
 
@@ -49,4 +58,6 @@ export const {
   startAuthSubmitting,
   finishAuthSubmitting,
   setIsValidate,
+  startValidation,
+  finishValidation,
 } = auth.actions;

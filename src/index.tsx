@@ -1,28 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { createGlobalStyle } from 'styled-components';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { ApolloProvider } from '@apollo/client/react';
-import { ApolloClient, InMemoryCache } from '@apollo/client';
-import { gql } from '@apollo/client';
-
-const client = new ApolloClient({
-  uri: 'https://48p1r2roz4.sse.codesandbox.io',
-  cache: new InMemoryCache()
-});
-
-client
-  .query({
-    query: gql`
-      query GetRates {
-        rates(currency: "USD") {
-          currency
-        }
-      }
-    `
-  })
-  .then(result => console.log(result));
+import React from "react";
+import ReactDOM from "react-dom";
+import { createGlobalStyle } from "styled-components";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { ApolloProvider } from "@apollo/client/react";
+import { client } from "./apollo";
 
 const Global = createGlobalStyle`
   * {
@@ -32,7 +14,7 @@ const Global = createGlobalStyle`
     font-family: 'Lato', sans-serif;
     box-sizing: border-box;
   };
-`
+`;
 
 ReactDOM.render(
   <React.StrictMode>
@@ -41,7 +23,7 @@ ReactDOM.render(
       <App />
     </ApolloProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 reportWebVitals();

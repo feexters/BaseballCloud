@@ -1,25 +1,71 @@
-import { useAppDispatch, useAppSelector } from "lib/hooks";
 import { UserData } from "lib/interfaces";
 import { Validation } from "lib/utils";
 import React from "react";
 import { Field, Form } from "react-final-form";
 import styled from "styled-components";
-import { Input, Select, SelectMultiple, TextArea } from "ui";
-import { Avatar } from "./components";
-import { setUserData } from "store";
-import { FacilitiesData } from "lib/interfaces/facilities-data";
+import { Input, Select, TextArea } from "ui";
+import { Avatar, SchoolSelect, SelectFacilities } from "./components";
 import { toastr } from "react-redux-toastr";
 import { toastrProfileOptions } from "ui";
+import { client, CURRENT_PROFILE, PROFILE } from "apollo";
+import { TeamSelect } from "./components/TeamsSelect";
+import { Default } from "react-spinners-css";
+import { useMutation } from "@apollo/client";
+import { UPDATE_PROFILE } from "apollo/mutations";
 
-const ProfileSettings: React.FC<{onToggle(): void}> = ({onToggle}) => {
-  const { submit, data } = useAppSelector((state) => state.user);
-  const dispatch = useAppDispatch();
+const hands = [
+  { id: "r", name: "R" },
+  { id: "l", name: "L" },
+];
 
-  const onSubmit = (user: UserData) => {
-    dispatch(setUserData(user));
+const positions = [
+  { id: "catcher", name: "Catcher" },
+  { id: "first_base", name: "First Base" },
+  { id: "second_base", name: "Second Base" },
+  { id: "shortstop", name: "Shortstop" },
+  { id: "third_base", name: "Third Base" },
+  { id: "outfield", name: "Outfield" },
+  { id: "pitcher", name: "Pitcher" },
+];
+
+const schoolYear = [
+  { id: "freshman", name: "Freshman" },
+  { id: "sophomore", name: "Sophomore" },
+  { id: "junior", name: "Junior" },
+  { id: "senior", name: "Senior" },
+  { id: "none", name: "None" },
+];
+
+const ProfileSettings: React.FC<{ onToggle(): void }> = ({ onToggle }) => {
+  const [submitProfile, { loading }] = useMutation(UPDATE_PROFILE);
+
+  const onSubmit = async (user: UserData) => {
+    const submitUser = JSON.parse(JSON.stringify(user)) as UserData;
+
+    submitUser.age = Number(submitUser.age);
+    submitUser.weight = Number(submitUser.weight);
+    submitUser.inches = Number(submitUser.inches);
+    submitUser.feet = Number(submitUser.feet);
+
+    await submitProfile({
+      variables: { form: submitUser },
+      update: (cache, { data: { update_profile } }) => {
+        cache.evict({
+          fieldName: "profile",
+          broadcast: false,
+        });
+        cache.writeQuery({ query: PROFILE, variables: {id: update_profile.profile.id}, data: update_profile });
+        cache.writeQuery({ query: CURRENT_PROFILE,  data: {current_profile: update_profile.profile} });
+      },
+    });
+
     onToggle();
-    toastr.success('', '', toastrProfileOptions)
+    toastr.success("", "", toastrProfileOptions);
   };
+
+  const { current_profile } = client.readQuery({
+    query: CURRENT_PROFILE,
+  });
 
   const onValidate = (user: UserData) => {
     const errors = {
@@ -44,36 +90,13 @@ const ProfileSettings: React.FC<{onToggle(): void}> = ({onToggle}) => {
     return {};
   };
 
-  const hands = [
-    { id: "0", name: "R" },
-    { id: "1", name: "L" },
-  ];
-
-  const positions = [
-    { id: "0", name: "Catcher" },
-    { id: "1", name: "First Base" },
-    { id: "2", name: "Second Base" },
-    { id: "3", name: "Shortstop" },
-    { id: "4", name: "Third Base" },
-    { id: "5", name: "Outfield" },
-    { id: "6", name: "Pitcher" },
-  ];
-
-  const schoolYear = [
-    { id: "0", name: "Freshman" },
-    { id: "1", name: "Sophomore" },
-    { id: "2", name: "Junior" },
-    { id: "3", name: "Senior" },
-    { id: "4", name: "None" },
-  ];
-
   return (
     <Wrap>
       <Form
         onSubmit={onSubmit}
         validate={onValidate}
-        initialValues={{ ...data }}
-        render={({ form, values, handleSubmit }) => (
+        initialValues={{ ...current_profile } as UserData}
+        render={({ form, values }) => (
           <>
             <Field name="avatar" onBlur={() => {}} component={Avatar} />
 
@@ -84,7 +107,6 @@ const ProfileSettings: React.FC<{onToggle(): void}> = ({onToggle}) => {
                     name="first_name"
                     title="First Name *"
                     placeholder="First Name *"
-                    onBlur={() => {}}
                     component={Input}
                   />
                 </PairWrap>
@@ -93,7 +115,6 @@ const ProfileSettings: React.FC<{onToggle(): void}> = ({onToggle}) => {
                     name="last_name"
                     title="Last Name *"
                     placeholder={"Last Name *"}
-                    onBlur={() => {}}
                     component={Input}
                   />
                 </PairWrap>
@@ -184,9 +205,7 @@ const ProfileSettings: React.FC<{onToggle(): void}> = ({onToggle}) => {
 
               <InputWrap>
                 <Field name="school" placeholder="School">
-                  {(props) => (
-                    <Select customValue props={props} values={positions} />
-                  )}
+                  {(props) => <SchoolSelect props={props} />}
                 </Field>
               </InputWrap>
               <InputWrap>
@@ -197,15 +216,7 @@ const ProfileSettings: React.FC<{onToggle(): void}> = ({onToggle}) => {
               <InputWrap>
                 <Field name="teams">
                   {({ input }) => (
-                    <SelectMultiple
-                      input={input}
-                      placeholder="Team"
-                      values={[
-                        { id: "0", name: "Example" },
-                        { id: "2", name: "Team" },
-                        { id: "3", name: "dscsd" },
-                      ]}
-                    />
+                    <TeamSelect input={input} placeholder="Team" />
                   )}
                 </Field>
               </InputWrap>
@@ -218,14 +229,7 @@ const ProfileSettings: React.FC<{onToggle(): void}> = ({onToggle}) => {
               <InputWrap>
                 <Field name="facilities">
                   {({ input }) => (
-                    <SelectMultiple
-                      input={input}
-                      placeholder="Facility"
-                      customValue={false}
-                      values={input.value.facilities?.map((elem: FacilitiesData) => {
-                        return { id: elem.id, name: elem.u_name };
-                      }) || []}
-                    />
+                    <SelectFacilities input={input} placeholder="Facility" />
                   )}
                 </Field>
               </InputWrap>
@@ -253,20 +257,23 @@ const ProfileSettings: React.FC<{onToggle(): void}> = ({onToggle}) => {
               <Pair>
                 <PairWrap>
                   <ButtonCancel
-                    isSubmitting={submit.status}
-                    disabled={submit.status}
-                    onClick={() => form.reset()}
+                    isSubmitting={loading}
+                    disabled={loading}
+                    onClick={() => {
+                      form.reset();
+                      onToggle();
+                    }}
                   >
                     Cancel
                   </ButtonCancel>
                 </PairWrap>
                 <PairWrap>
                   <ButtonSubmit
-                    isSubmitting={submit.status}
-                    disabled={submit.status}
+                    isSubmitting={loading}
+                    disabled={loading}
                     onClick={() => form.submit()}
                   >
-                    Save
+                    {loading ? <Default size={20} color={"white"} /> : "Save"}
                   </ButtonSubmit>
                 </PairWrap>
               </Pair>
@@ -294,7 +301,7 @@ const Wrap = styled.aside`
   overflow: auto;
   z-index: 5;
 
-  @media(max-width: 640px) {
+  @media (max-width: 640px) {
     flex-direction: row;
   }
 `;
@@ -361,14 +368,18 @@ const ErrorValidation = styled.span`
 
 const ButtonSubmit = styled.button<{ isSubmitting: boolean }>`
   width: 100%;
+  min-height: 43px;
   padding: 7px 19px 10px 18px;
   font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid transparent;
   border-radius: 4px;
   color: #ffffff;
   font-weight: 400;
   background-color: ${({ isSubmitting }) =>
-    isSubmitting ? "#23527c" : "#48bbff"};
+    isSubmitting ? "#75a4bf" : "#48bbff"};
   cursor: pointer;
 
   &:hover {
@@ -383,8 +394,9 @@ const ButtonCancel = styled.button<{ isSubmitting: boolean }>`
   border: solid 1px #d1d7db;
   border-radius: 4px;
   font-weight: 400;
+  color: ${({ isSubmitting }) => (isSubmitting ? "white" : "black")};
   background-color: ${({ isSubmitting }) =>
-    isSubmitting ? "#23527c" : "white"};
+    isSubmitting ? "#75a4bf" : "white"};
   cursor: pointer;
 
   &:hover {

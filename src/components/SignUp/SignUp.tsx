@@ -30,10 +30,10 @@ const SignIn = () => {
     const errors = {
       email: Validation.email(email),
       password: Validation.password(password),
-      confirm: Validation.confirm(password, password_confirmation),
+      password_confirmation: Validation.confirm(password, password_confirmation),
     };
 
-    if (errors.email || errors.password || errors.confirm) {
+    if (errors.email || errors.password || errors.password_confirmation) {
       return errors;
     } else {
       return {};

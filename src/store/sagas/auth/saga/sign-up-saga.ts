@@ -12,6 +12,9 @@ export interface SingUpWorker {
 interface Response {
   headers: Headers;
   status: number;
+  data: {
+    role: string
+  };
 }
 
 function* signUpWorker({
@@ -25,7 +28,7 @@ function* signUpWorker({
     if (response.status === 422) {
       yield put(finishAuthSubmitting('Email has already been taken'));
     } else if (response.status === 200 ) {
-      yield put(authorized({ status: true, headers: response.headers}));
+      yield put(authorized({ status: true, headers: response.headers, role: response.data.role}));
       yield put(finishAuthSubmitting(''));
     } else {
       yield put(finishAuthSubmitting(''));

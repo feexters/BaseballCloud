@@ -1,15 +1,22 @@
-import { ArrowAccountIcon } from "assets";
-import { useAppSelector } from "lib/hooks";
+import { useQuery } from "@apollo/client";
+import { PROFILE } from "apollo";
 import { Validation } from "lib/utils";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { ProfileInfo, ProfileMain, ProfileSettings } from "./components";
+import { ProfileInfo, ProfileMain, ProfileSettings, ProfileStart } from "./components";
+import { MainLoader } from "ui";
 
-const Profile = () => {
-  const { user } = useAppSelector((state) => state);
-  const isEnoughData = Validation.userFieldsRequired(user.data);
 
-  const [isChangeForm, setIsChangeForm] = useState(!isEnoughData);
+const Profile: React.FC<{id: string}> = ({id}) => {
+  const { loading, data } = useQuery(PROFILE, {variables: {id: id} });
+
+  const isEnoughData = !loading ? Validation.userFieldsRequired(data.profile) : false;
+  const [isChangeForm, setIsChangeForm] = useState(isEnoughData);
+
+  if (loading) {
+    return <MainLoader />
+  }
+
 
   return (
     <Wrap>
@@ -21,17 +28,7 @@ const Profile = () => {
 
       <Main>
         {!isEnoughData ? (
-          <StartWindow>
-            <YourAccount>
-              <ArrowAccountIcon />
-              <YourAccountTitle>Your Account</YourAccountTitle>
-              <YourAccountText>
-                Changing your profile options lets you control how others see
-                you and your profile. These settings include things like your
-                name, personal info and school.
-              </YourAccountText>
-            </YourAccount>
-          </StartWindow>
+          <ProfileStart />
         ) : (
           <ProfileMain />
         )}
@@ -63,39 +60,6 @@ const Main = styled.main`
   overflow: auto;
   flex-direction: column;
   width: calc(100vw - 220px);
-`;
-
-const StartWindow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 570px;
-  border-radius: 4px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 15px 0 rgb(0 0 0 / 10%);
-`;
-
-const YourAccount = styled.div`
-  max-width: 420px;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-`;
-
-const YourAccountTitle = styled.h1`
-  line-height: 1.25;
-  font-weight: 400;
-  text-align: center;
-  color: #667784;
-  font-size: 32px;
-  font-weight: 700;
-  margin-top: 17px;
-  margin-bottom: 16px;
-`;
-const YourAccountText = styled.p`
-  font-size: 16px;
-  color: #667784;
-  text-align: center;
 `;
 
 export default Profile;

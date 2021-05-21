@@ -1,27 +1,46 @@
+import { useQuery } from "@apollo/client";
+import { SCHOOLS } from "apollo/queries/schools";
 import { SelectArrowIcon } from "assets";
+import { SchoolData } from "lib/interfaces/school-data";
 import { getId } from "lib/utils";
-import React, { KeyboardEvent, useMemo, useRef, useState } from "react";
-import { FieldRenderProps } from "react-final-form";
+import React, { KeyboardEvent, useRef, useState } from "react";
+import { Field, FieldRenderProps, Form } from "react-final-form";
+import Loader from "react-loader-spinner";
 import styled from "styled-components";
 
 interface SelectProps {
-  customValue?: boolean;
-  values: {
-    id: string;
-    name: string;
-  }[];
   props: FieldRenderProps<any, HTMLElement>;
 }
 
-const Select: React.FC<SelectProps> = ({
-  values,
-  customValue = false,
+const SchoolSelect: React.FC<SelectProps> = ({
   props: { input, meta, ...rest },
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [hoverId, setHoverId] = useState(values.length ? values[0].id : "");
+  const [searchValue, setSearchValue] = useState("");
 
-  const createValueId = useMemo(() => getId(), []);
+  const { loading, data } = useQuery(SCHOOLS, {
+    variables: { search: searchValue },
+  });
+
+  let values = loading
+    ? ([] as SchoolData[])
+    : (data.schools.schools as SchoolData[]);
+
+  const isIdenticalData = values.filter(
+    (value) => value.name === searchValue
+  ).length;
+
+  if (searchValue && !isIdenticalData) {
+    values = [{ id: "-1", name: `Create option "${searchValue}"` }, ...values];
+  }
+
+  const currentValueIndex = values.findIndex(
+    (value) => value.id === input.value.id
+  );
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [hoverId, setHoverId] = useState(
+    currentValueIndex === -1 ? 0 : currentValueIndex
+  );
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -41,8 +60,12 @@ const Select: React.FC<SelectProps> = ({
     setIsOpen(!isOpen);
   };
 
-  const onPressEnter = (event: KeyboardEvent<HTMLDivElement>) => {
+  const onPressEnter = (
+    event: KeyboardEvent<HTMLDivElement>,
+    submit: () => void
+  ) => {
     if (event.code === "Enter") {
+      submit();
       onClose();
       if (inputRef.current) {
         inputRef.current.blur();
@@ -50,8 +73,23 @@ const Select: React.FC<SelectProps> = ({
     }
   };
 
-  const onClick = (value: string) => {
-    input.onChange(value);
+  const onClick = (index: number) => {
+    if (searchValue && !index && !isIdenticalData) {
+      input.onChange({ id: getId(), name: searchValue });
+    } else {
+      input.onChange(values[index]);
+    }
+
+    onClose();
+  };
+
+  const onSubmit = () => {
+    if (searchValue && !hoverId && !isIdenticalData) {
+      input.onChange({ id: getId(), name: searchValue });
+    } else {
+      input.onChange(values[hoverId]);
+    }
+
     onClose();
   };
 
@@ -66,11 +104,31 @@ const Select: React.FC<SelectProps> = ({
       >
         <Label htmlFor={input.name}>{rest.placeholder}</Label>
 
-        <Toggle onKeyPress={(event) => onPressEnter(event)}>
-          {customValue ? (
-            <Input {...input} {...rest} ref={inputRef} autoComplete={"off"} />
-          ) : (
-            <Text>{input.value ? values.find(value => input.value === value.id)?.name : rest.placeholder}</Text>
+        <Toggle>
+          <Form
+            onSubmit={onSubmit}
+            initialValues={{ search_school: input.value.name }}
+            render={({ form }) => (
+              <Field name="search_school" placeholder="School">
+                {({ input }) => (
+                  <Input
+                    {...input}
+                    {...rest}
+                    value={input.value}
+                    onKeyPress={(event) => onPressEnter(event, form.submit)}
+                    onChange={(event) => {
+                      input.onChange(event.target.value);
+                      setSearchValue(event.target.value);
+                    }}
+                    ref={inputRef}
+                    autoComplete={"off"}
+                  />
+                )}
+              </Field>
+            )}
+          />
+          {loading && (
+            <Loader type="Oval" color="#788b99" height={20} width={30} />
           )}
           <ArrowWrap isOpen={isOpen} onClick={onToggle}>
             <SelectArrowIcon />
@@ -78,20 +136,11 @@ const Select: React.FC<SelectProps> = ({
         </Toggle>
         {isOpen && (
           <Selection>
-            {customValue && input.value && (
+            {values.map((value, index) => (
               <SelectionItem
-                isActive={createValueId === hoverId}
-                onClick={() => onClick(input.value)}
-                onMouseEnter={() => setHoverId(createValueId)}
-              >
-                <Text>{`Create option "${input.value}"`}</Text>
-              </SelectionItem>
-            )}
-            {values.map((value) => (
-              <SelectionItem
-                isActive={value.id === hoverId || value.name === input.value}
-                onClick={() => onClick(value.id)}
-                onMouseEnter={() => setHoverId(value.id)}
+                isActive={index === hoverId || value.name === input.value}
+                onMouseDown={() => onClick(index)}
+                onMouseEnter={() => setHoverId(index)}
                 key={value.id}
               >
                 <Text>{value.name ? value.name : "-"}</Text>
@@ -209,4 +258,4 @@ const SelectionItem = styled.div<{ isActive: boolean }>`
   cursor: pointer;
 `;
 
-export default Select;
+export default SchoolSelect;

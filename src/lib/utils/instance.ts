@@ -11,9 +11,11 @@ export const instance = async () => {
       "Content-Type": "application/json",
     };
   }
+  
   const axiosCreate = axios.create({
     headers,
     baseURL: "https://baseballcloud-back.herokuapp.com/api/v1/",
   });
+
   return axiosCreate;
 };

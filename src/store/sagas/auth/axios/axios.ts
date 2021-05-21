@@ -7,7 +7,7 @@ export async function fetchSignIn(user: SignInData) {
   )
     .post("auth/sign_in", user)
     .then((response) => {
-      return response.headers
+      return response
     })
     .catch((e) => console.log(e));
 }

@@ -6,21 +6,25 @@ import { ROUTE_LEADERBOARD, ROUTE_NETWORK, ROUTE_PROFILE } from "lib/const";
 import { useAppSelector } from "lib/hooks";
 import avatarImage from "assets/images/user.png";
 import { DropDownPanel } from "ui";
+import { client, CURRENT_PROFILE } from "apollo";
 
-const Header = () => {
+const selectMenu = [
+  { id: "0", value: "My Profile" },
+  { id: "1", value: "Log Out" },
+];
+
+const Header: React.FC<{ isLoading: boolean }> = ({ isLoading }) => {
   const history = useHistory();
   const location = useLocation();
   const {
     auth: { isValid },
-    user: { data },
   } = useAppSelector((state) => state);
 
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
-  const selectMenu = [
-    { id: "0", value: "My Profile" },
-    { id: "1", value: "Log Out" },
-  ];
+  const { current_profile } = client.readQuery({
+    query: CURRENT_PROFILE,
+  }) || { current_profile: null };
 
   const onSelect = (id: string) => {
     if (id === selectMenu[0].id) {
@@ -35,7 +39,7 @@ const Header = () => {
   return (
     <HeaderWrap>
       <LogoIcon />
-      {isValid && (
+      {isValid && !isLoading && (
         <NavigationWrap>
           <NavigationList>
             <NavigationItem
@@ -52,10 +56,10 @@ const Header = () => {
             </NavigationItem>
           </NavigationList>
           <ProfileWrap>
-            <PlayerAvatar image={data.avatar}></PlayerAvatar>
+            <PlayerAvatar image={current_profile.avatar}></PlayerAvatar>
             <ProfileMenu onClick={() => setIsDropDownOpen(!isDropDownOpen)}>
-              {data.first_name && data.last_name
-                ? `${data.first_name} ${data.last_name}`
+              {current_profile.first_name && current_profile.last_name
+                ? `${current_profile.first_name} ${current_profile.last_name}`
                 : "Profile Name"}
               <IconWrap>
                 <TriangleIcon />

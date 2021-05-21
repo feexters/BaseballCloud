@@ -1,0 +1,9 @@
+overwrite: true
+schema: "https://baseballcloud-back.herokuapp.com/api/v1/graphql"
+documents: "src/apollo"
+generates:
+  src/generated/graphql.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"

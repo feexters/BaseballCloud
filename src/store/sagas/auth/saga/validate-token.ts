@@ -1,5 +1,5 @@
 import { put, takeEvery, call, StrictEffect } from "redux-saga/effects";
-import { setIsValidate } from "store/slices";
+import { finishValidation, setIsValidate, startValidation } from "store/slices";
 import { AUTH_VALIDATE_TOKEN } from "../actions";
 import { fetchValidateToken } from "../axios";
 
@@ -12,6 +12,8 @@ function* validateTokenWorker({
   payload,
 }: ValidateTokenWorker): Generator<StrictEffect, void, string> {
   try {
+    yield put(startValidation())
+
     const token = yield call(() => fetchValidateToken());
 
     if (token) {
@@ -19,7 +21,10 @@ function* validateTokenWorker({
     } else {
       yield put(setIsValidate(false));
     }
+
+    yield put(finishValidation())
   } catch (e) {
+    yield put(finishValidation())
     console.error(e);
   }
 }

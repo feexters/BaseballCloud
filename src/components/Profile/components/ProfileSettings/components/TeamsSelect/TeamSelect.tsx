@@ -1,49 +1,47 @@
+import { useQuery } from "@apollo/client";
+import { TEAMS } from "apollo";
 import { SelectArrowIcon } from "assets";
+import { TeamData } from "lib/interfaces";
 import { getId } from "lib/utils";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Field, FieldInputProps, Form } from "react-final-form";
+import Loader from "react-loader-spinner";
 import styled from "styled-components";
-
-interface Item {
-  id: string;
-  name: string;
-}
 
 interface SelectProps {
   placeholder: string;
   input: FieldInputProps<any, HTMLElement>;
-  values: Item[];
-  customValue?: boolean;
 }
 
-const Select: React.FC<SelectProps> = ({
-  placeholder,
-  values,
-  input,
-  customValue = true,
-}) => {
-  const selectedItems = useMemo(() => input.value ? (input.value as Item[]) : ([] as Item[]), [input.value]);
+const TeamSelect: React.FC<SelectProps> = ({ placeholder, input }) => {
+  const selectedItems = useMemo(
+    () => (input.value ? (input.value as TeamData[]) : ([] as TeamData[])),
+    [input.value]
+  );
 
-  const showingValues = useMemo(
-    () =>
-      values.filter(
-        (item) =>
-          !selectedItems.filter((selected) => selected.id === item.id).length
-      ),
-    [values, selectedItems]
+  const [searchValue, setSearchValue] = useState("");
+
+  const { loading, data } = useQuery(TEAMS, {
+    variables: { search: searchValue },
+  });
+
+  let values = loading ? ([] as TeamData[]) : (data.teams.teams as TeamData[]);
+
+  const isIdenticalData = values.filter(
+    (value) => value.name === searchValue
+  ).length;
+
+  if (searchValue && !isIdenticalData) {
+    values = [{ id: "-1", name: `Create option "${searchValue}"` }, ...values];
+  }
+
+  const showingValues = values.filter(
+    (item) =>
+      !selectedItems.filter((selected) => selected.id === item.id).length
   );
 
   const [isOpen, setIsOpen] = useState(false);
-  const [hoverId, setHoverId] = useState(
-    showingValues.length ? showingValues[0].id : "0"
-  );
-  const [createValue, setCreateValue] = useState({ id: getId(), name: "" });
-
-  useEffect(() => {
-    if (createValue.name) {
-      setHoverId(createValue.id);
-    }
-  }, [createValue]);
+  const [hoverId, setHoverId] = useState(0);
 
   useEffect(() => {
     if (!isOpen) {
@@ -68,24 +66,14 @@ const Select: React.FC<SelectProps> = ({
     }
   };
 
-  const onSearch = (value: string) => {
-    // dispatch(...)
-    if (value.trim()) {
-      setCreateValue({ id: createValue.id, name: `Create option "${value}"` });
+  const onClick = (index: number) => {
+    if (searchValue && !hoverId && !isIdenticalData) {
+      input.onChange([...selectedItems, { id: getId(), name: searchValue }]);
     } else {
-      setCreateValue({ id: createValue.id, name: `` });
+      input.onChange([...selectedItems, values[hoverId]]);
     }
-  };
 
-  const onClick = (item: Item) => {
     onClose();
-    if (item.id === createValue.id) {
-      onSubmit({ inputMultiValue: inputRef.current!.value });
-    } else {
-      input.onChange([...selectedItems, item]);
-    }
-
-    setCreateValue({ id: getId(), name: "" });
   };
 
   const onDelete = (id: string) => {
@@ -93,12 +81,14 @@ const Select: React.FC<SelectProps> = ({
     input.onChange(values);
   };
 
-  const onSubmit = ({ inputMultiValue }: { inputMultiValue: string }) => {
-    if (inputMultiValue && inputMultiValue.trim() && customValue) {
-      const values = [...selectedItems, { id: getId(), name: inputMultiValue }];
-      input.onChange(values);
-      onClose();
+  const onSubmit = () => {
+    if (searchValue && !hoverId && !isIdenticalData) {
+      input.onChange([...selectedItems, { id: getId(), name: searchValue }]);
+    } else {
+      input.onChange([...selectedItems, values[hoverId]]);
     }
+
+    onClose();
   };
 
   const onInputBlur = (reset: () => void) => {
@@ -140,9 +130,7 @@ const Select: React.FC<SelectProps> = ({
         <SelectForm
           onSubmit={(event) => {
             handleSubmit(event);
-            if (customValue) {
-              form.reset();
-            }
+            form.reset();
           }}
         >
           <Field name="inputMultiValue">
@@ -170,14 +158,23 @@ const Select: React.FC<SelectProps> = ({
                       {...rest}
                       onChange={(event) => {
                         input.onChange(event);
-                        onSearch(event.target.value);
+                        setSearchValue(event.target.value);
                       }}
                       onBlur={() => onInputBlur(form.reset)}
                       width={input.value.length * 16 || 5}
                       onKeyDown={onKeyDown}
+                      autoComplete={"off"}
                       ref={inputRef}
                     />
                   </InputWrap>
+                  {loading && (
+                    <Loader
+                      type="Oval"
+                      color="#788b99"
+                      height={20}
+                      width={30}
+                    />
+                  )}
                   <ArrowWrap isOpen={isOpen}>
                     <SelectArrowIcon />
                   </ArrowWrap>
@@ -185,30 +182,20 @@ const Select: React.FC<SelectProps> = ({
 
                 {isOpen && (
                   <Selection>
-                    {createValue.name && customValue
-                      ? [createValue, ...showingValues].map((value) => (
-                          <SelectionItem
-                            isActive={value.id === hoverId}
-                            onClick={() => onClick(value)}
-                            onMouseEnter={() => setHoverId(value.id)}
-                            key={value.id}
-                          >
-                            <Text>{value.name}</Text>
-                          </SelectionItem>
-                        ))
-                      : showingValues.map((value) => (
-                          <SelectionItem
-                            isActive={value.id === hoverId}
-                            onClick={() => onClick(value)}
-                            onMouseEnter={() => setHoverId(value.id)}
-                            key={value.id}
-                          >
-                            <Text>{value.name}</Text>
-                          </SelectionItem>
-                        ))}
-                    {!createValue.name && !showingValues.length && (
+                    {showingValues.length ? (
+                      showingValues.map((value, index) => (
+                        <SelectionItem
+                          isActive={index === hoverId}
+                          onClick={() => onClick(index)}
+                          onMouseEnter={() => setHoverId(index)}
+                          key={value.id}
+                        >
+                          <Text>{value.name}</Text>
+                        </SelectionItem>
+                      ))
+                    ) : (
                       <SelectionItem isActive={false}>
-                        <Text>Type to search</Text>
+                        <Text>{loading ? "Loading..." : "Type to search"}</Text>
                       </SelectionItem>
                     )}
                   </Selection>
@@ -378,4 +365,4 @@ const SelectionItem = styled.div<{ isActive: boolean }>`
   cursor: pointer;
 `;
 
-export default Select;
+export default TeamSelect;
