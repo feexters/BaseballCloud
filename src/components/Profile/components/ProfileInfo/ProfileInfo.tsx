@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import avatarImage from "assets/images/user.png";
-import { useAppSelector } from "lib/hooks";
 import {
   AgeIcon,
   BatsIcon,
@@ -10,23 +9,28 @@ import {
   ThrowIcon,
   WeightIcon,
 } from "assets";
+import { client, PROFILE } from "apollo";
+import { UserData } from "lib/interfaces";
+import { positions, schoolYear } from "lib/const";
 
-const ProfileInfo: React.FC<{ onToggle(): void }> = ({ onToggle }) => {
-  const { data } = useAppSelector((state) => state.user);
+const ProfileInfo: React.FC<{ onToggle(): void, id: string }> = ({ onToggle, id }) => {
+  const { profile } = client.readQuery({query: PROFILE, variables: {id: id}})
+  console.log(profile)
+  const data = profile as UserData;
 
   return (
     <Wrap>
       <TopInfo>
         <UserPhoto image={data.avatar} />
         <UserName>{data.first_name + " " + data.last_name}</UserName>
-        <Position mainTheme>{data.position}</Position>
-        {data.position2 && <Position>{data.position}</Position>}
+        <Position mainTheme>{positions.find(item => item.id === data.position)?.name}</Position>
+        {data.position2 && <Position>{positions.find(item => item.id === data.position2)?.name}</Position>}
         <Change onClick={onToggle}>
           <EditIcon />
         </Change>
       </TopInfo>
 
-      <InfoWithIcon>
+       <InfoWithIcon>
         <InfoWithIconName>
           <InfoIcon>
             <AgeIcon />
@@ -81,14 +85,14 @@ const ProfileInfo: React.FC<{ onToggle(): void }> = ({ onToggle }) => {
       {data.school && (
         <InfoWrap>
           <InfoTitle>School</InfoTitle>
-          <InfoText>{data.school}</InfoText>
+          <InfoText>{data.school.name}</InfoText>
         </InfoWrap>
       )}
 
       {data.school_year && (
         <InfoWrap>
           <InfoTitle>School Year</InfoTitle>
-          <InfoText>{data.school_year}</InfoText>
+          <InfoText>{schoolYear.find(item => item.id === data.school_year)?.name}</InfoText>
         </InfoWrap>
       )}
 

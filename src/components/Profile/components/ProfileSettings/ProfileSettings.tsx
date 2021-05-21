@@ -12,28 +12,11 @@ import { TeamSelect } from "./components/TeamsSelect";
 import { Default } from "react-spinners-css";
 import { useMutation } from "@apollo/client";
 import { UPDATE_PROFILE } from "apollo/mutations";
+import { positions, schoolYear } from "lib/const";
 
 const hands = [
   { id: "r", name: "R" },
   { id: "l", name: "L" },
-];
-
-const positions = [
-  { id: "catcher", name: "Catcher" },
-  { id: "first_base", name: "First Base" },
-  { id: "second_base", name: "Second Base" },
-  { id: "shortstop", name: "Shortstop" },
-  { id: "third_base", name: "Third Base" },
-  { id: "outfield", name: "Outfield" },
-  { id: "pitcher", name: "Pitcher" },
-];
-
-const schoolYear = [
-  { id: "freshman", name: "Freshman" },
-  { id: "sophomore", name: "Sophomore" },
-  { id: "junior", name: "Junior" },
-  { id: "senior", name: "Senior" },
-  { id: "none", name: "None" },
 ];
 
 const ProfileSettings: React.FC<{ onToggle(): void }> = ({ onToggle }) => {

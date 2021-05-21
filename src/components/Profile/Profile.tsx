@@ -21,7 +21,7 @@ const Profile: React.FC<{id: string}> = ({id}) => {
   return (
     <Wrap>
       {!isChangeForm ? (
-        <ProfileInfo onToggle={() => setIsChangeForm(true)} />
+        <ProfileInfo onToggle={() => setIsChangeForm(true)} id={id} />
       ) : (
         <ProfileSettings onToggle={() => setIsChangeForm(false)} />
       )}
