@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { LogoIcon, TriangleIcon } from "assets";
 import { useHistory, useLocation } from "react-router-dom";
-import { ROUTE_LEADERBOARD, ROUTE_LOGIN, ROUTE_NETWORK, ROUTE_PROFILE } from "lib/const";
+import { Routes } from "lib/const";
 import { useAppDispatch, useAppSelector } from "lib/hooks";
 import avatarImage from "assets/images/user.png";
 import { DropDownPanel } from "ui";
@@ -30,7 +30,7 @@ const Header: React.FC<{ isLoading: boolean }> = ({ isLoading }) => {
 
   const onSelect = (id: string) => {
     if (id === selectMenu[0].id) {
-      history.push(ROUTE_PROFILE);
+      history.push(Routes.PROFILE);
     } else {
       dispatch(authSingOut())
     }
@@ -45,14 +45,14 @@ const Header: React.FC<{ isLoading: boolean }> = ({ isLoading }) => {
         <NavigationWrap>
           <NavigationList>
             <NavigationItem
-              onClick={() => history.push(ROUTE_LEADERBOARD)}
-              isActive={location.pathname === ROUTE_LEADERBOARD}
+              onClick={() => history.push(Routes.LEADERBOARD)}
+              isActive={location.pathname === Routes.LEADERBOARD}
             >
               Leaderboard
             </NavigationItem>
             <NavigationItem
-              onClick={() => history.push(ROUTE_NETWORK)}
-              isActive={location.pathname === ROUTE_NETWORK}
+              onClick={() => history.push(Routes.NETWORK)}
+              isActive={location.pathname === Routes.NETWORK}
             >
               Network
             </NavigationItem>

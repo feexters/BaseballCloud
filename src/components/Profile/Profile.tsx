@@ -12,9 +12,10 @@ import {
 import { MainLoader } from "ui";
 import { useParams } from "react-router";
 
-const Profile: React.FC<{ id: string }> = ({ id }) => {
-  const profileId = useParams()
-  
+const Profile: React.FC<{ currentId: string }> = ({ currentId }) => {
+  const profileRoute = useParams() as { id: string };
+  const id = profileRoute.id ? profileRoute.id : currentId;
+
   const { loading: loadingProfile, data } = useQuery(PROFILE, {
     variables: { id: id },
   });
@@ -34,7 +35,7 @@ const Profile: React.FC<{ id: string }> = ({ id }) => {
 
   return (
     <Wrap>
-      {(!isChangeForm && isEnoughData) ? (
+      {!isChangeForm && isEnoughData ? (
         <ProfileInfo onToggle={() => setIsChangeForm(true)} id={id} />
       ) : (
         <ProfileSettings onToggle={() => setIsChangeForm(false)} />

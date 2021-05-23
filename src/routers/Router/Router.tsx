@@ -1,13 +1,7 @@
 import { client, CURRENT_PROFILE } from "apollo";
 import { LeaderBoard, Network } from "components";
 import { Profile } from "components/Profile";
-import {
-  ROUTE_LEADERBOARD,
-  ROUTE_LOGIN,
-  ROUTE_MAIN,
-  ROUTE_NETWORK,
-  ROUTE_PROFILE,
-} from "lib/const/routes";
+import { Routes } from "lib/const/routes";
 import { useAppSelector } from "lib/hooks";
 import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
@@ -22,21 +16,24 @@ const Router = () => {
 
   return (
     <Switch>
-      <Route exact path={ROUTE_MAIN}>
+      <Route exact path={Routes.MAIN}>
         {!isValid ? (
-          <Redirect to={ROUTE_LOGIN} />
+          <Redirect to={Routes.LOGIN} />
         ) : (
-          <Redirect to={ROUTE_PROFILE} />
+          <Redirect to={Routes.PROFILE} />
         )}
       </Route>
-      <Route path={ROUTE_PROFILE}>
-        {!isValid ? <Redirect to={ROUTE_LOGIN} /> : <Profile id={current_profile.id} />}
+      <Route path={Routes.PROFILE_ID}>
+        {!isValid ? <Redirect to={Routes.LOGIN} /> : <Profile currentId={current_profile.id} />}
       </Route>
-      <Route path={ROUTE_NETWORK}>
-        {!isValid ? <Redirect to={ROUTE_NETWORK} /> : <Network />}
+      <Route path={Routes.PROFILE}>
+        {!isValid ? <Redirect to={Routes.LOGIN} /> : <Profile currentId={current_profile.id} />}
       </Route>
-      <Route path={ROUTE_LEADERBOARD}>
-        {!isValid ? <Redirect to={ROUTE_LEADERBOARD} /> : <LeaderBoard />}
+      <Route path={Routes.NETWORK}>
+        {!isValid ? <Redirect to={Routes.NETWORK} /> : <Network />}
+      </Route>
+      <Route path={Routes.LEADERBOARD}>
+        {!isValid ? <Redirect to={Routes.LEADERBOARD} /> : <LeaderBoard />}
       </Route>
 
       <LoginRoutes />

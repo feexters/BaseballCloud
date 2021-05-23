@@ -1,7 +1,10 @@
-export const ROUTE_MAIN = "/";
-export const ROUTE_LOGIN = "/login";
-export const ROUTE_PROFILE = "/profile";
-export const ROUTE_REGISTRATION = "/registration";
-export const ROUTE_FORGOTPASSWORD = "/forgotpassword";
-export const ROUTE_LEADERBOARD = "/leaderboard";
-export const ROUTE_NETWORK = "/network";
+export const Routes = {
+  MAIN: "/",
+  LOGIN: "/login",
+  PROFILE: "/profile",
+  PROFILE_ID:"/profile/:id",
+  REGISTRATION: "/registration",
+  FORGOTPASSWORD: "/forgotpassword",
+  LEADERBOARD: "/leaderboard",
+  NETWORK: "/network",
+};

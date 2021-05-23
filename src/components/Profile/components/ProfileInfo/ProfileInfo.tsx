@@ -79,7 +79,7 @@ const ProfileInfo: React.FC<{ onToggle(): void; id: string }> = ({
           </InfoIcon>
           <InfoWithIconText>Throws</InfoWithIconText>
         </InfoWithIconName>
-        <InfoWithIconText>{data.throws_hand}</InfoWithIconText>
+        <InfoWithIconText>{data.throws_hand.toUpperCase()}</InfoWithIconText>
       </InfoWithIcon>
 
       <InfoWithIcon>
@@ -89,7 +89,7 @@ const ProfileInfo: React.FC<{ onToggle(): void; id: string }> = ({
           </InfoIcon>
           <InfoWithIconText>Bats</InfoWithIconText>
         </InfoWithIconName>
-        <InfoWithIconText>{data.bats_hand}</InfoWithIconText>
+        <InfoWithIconText>{data.bats_hand.toUpperCase()}</InfoWithIconText>
       </InfoWithIcon>
 
       {data.school && (

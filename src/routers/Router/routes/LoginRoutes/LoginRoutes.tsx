@@ -1,10 +1,5 @@
 import { ForgotPassword, SignIn, SignUp } from "components";
-import {
-  ROUTE_FORGOTPASSWORD,
-  ROUTE_LOGIN,
-  ROUTE_PROFILE,
-  ROUTE_REGISTRATION,
-} from "lib/const/routes";
+import { Routes } from "lib/const/routes";
 import { useAppSelector } from "lib/hooks";
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
@@ -14,14 +9,14 @@ export default function LoginRoutes() {
 
   return (
     <>
-      <Route path={ROUTE_REGISTRATION}>
+      <Route path={Routes.REGISTRATION}>
         <SignUp />
       </Route>
-      <Route path={ROUTE_FORGOTPASSWORD}>
+      <Route path={Routes.FORGOTPASSWORD}>
         <ForgotPassword />
       </Route>
-      <Route path={ROUTE_LOGIN}>
-        {!isValid ? <SignIn /> : <Redirect to={ROUTE_PROFILE} />}
+      <Route path={Routes.LOGIN}>
+        {!isValid ? <SignIn /> : <Redirect to={Routes.PROFILE} />}
       </Route>
     </>
   );
