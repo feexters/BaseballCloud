@@ -16,7 +16,7 @@ const InputFile: React.FC<InputProps> = ({ input }) => {
        input.onChange({
          file: file,
          blob: event.target?.result,
-       })
+        })
       };
   
       reader.readAsDataURL(file);

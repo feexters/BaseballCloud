@@ -1,34 +1,44 @@
-import React, { useMemo } from "react";
+import React, { useEffect } from "react";
 import { Field, FieldRenderProps, Form } from "react-final-form";
 import styled from "styled-components";
 import { InputFile } from "ui";
 import avatarImage from "assets/images/user.png";
+import { useAppDispatch, useAppSelector } from "lib/hooks";
+import { userUploadAvatar } from "store/sagas/user";
+import { removeUploadAvatar } from "store";
 
 interface ImageData {
   file: File;
   blob: string | ArrayBuffer | null | undefined;
 }
 
-type InputProps = FieldRenderProps<string, any>;
+type InputProps = {
+  propsInput: FieldRenderProps<string, any>;
+  currentImage: string;
+};
 
-const Avatar: React.FC<InputProps> = ({ input }) => {
+const Avatar: React.FC<InputProps> = ({
+  propsInput: { input },
+  currentImage,
+}) => {
+  const dispatch = useAppDispatch();
+  const { uploadAvatar } = useAppSelector((state) => state.user);
+
   const onSubmit = ({ file }: ImageData) => {
     if (file.name) {
-      // dispatch(...)
+      dispatch(userUploadAvatar(file));
     }
   };
 
-  const currentImage = input.value;
-
-  const initialValues = useMemo(() => {
-    return { avatarLoader: {} as ImageData };
-  }, []);
+  useEffect(() => {
+    input.onChange(uploadAvatar || currentImage);
+  }, [uploadAvatar, currentImage, input]);
 
   return (
     <AvatarWrap>
       <Form
         onSubmit={(value) => onSubmit(value.avatarLoader)}
-        initialValues={{ ...initialValues }}
+        initialValues={{ avatarLoader: {} as ImageData }}
         render={({ form }) => (
           <Field
             name="avatarLoader"
@@ -37,7 +47,9 @@ const Avatar: React.FC<InputProps> = ({ input }) => {
           >
             {({ input }) => (
               <>
-                <AvatarIcon image={input.value.blob || currentImage || ""} />
+                <AvatarIcon
+                  image={uploadAvatar || input.value.blob || currentImage || ""}
+                />
                 <InputFile input={input} />
                 {input.value.blob ? (
                   <>
@@ -46,7 +58,14 @@ const Avatar: React.FC<InputProps> = ({ input }) => {
                       <UploadButton uploadTheme onClick={form.submit}>
                         Upload Photo
                       </UploadButton>
-                      <UploadButton onClick={form.reset}>Cancel</UploadButton>
+                      <UploadButton
+                        onClick={() => {
+                          dispatch(removeUploadAvatar());
+                          form.reset();
+                        }}
+                      >
+                        Cancel
+                      </UploadButton>
                     </InputControl>
                   </>
                 ) : (

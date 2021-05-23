@@ -1,0 +1,1 @@
+export { watchUploadAvatar } from "./upload-avatar-saga";

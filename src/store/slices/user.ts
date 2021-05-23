@@ -1,30 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UserData } from "lib/interfaces";
-
-interface Submit {
-  status: boolean;
-  result: string;
-}
 
 export const user = createSlice({
   name: "user",
   initialState: {
-    data: {} as UserData,
-    submit: {} as Submit,
+    uploadAvatar: ''
   },
   reducers: {
-    setUserData(state, action: PayloadAction<UserData>) {
-      state.data = action.payload;
+    uploadAvatar(state, action: PayloadAction<string>) {
+      state.uploadAvatar = 'https://baseballcloud-staging-assets.s3.us-east-2.amazonaws.com/' + action.payload
     },
-    startUserSubmitting(state) {
-      state.submit.status = true;
-    },
-    finishUserSubmitting(state, action: PayloadAction<string>) {
-      state.submit.status = false;
-      state.submit.result = action.payload;
-    },
+    removeUploadAvatar(state) {
+      state.uploadAvatar = ''
+    }
   },
 });
 
-export const { startUserSubmitting, finishUserSubmitting, setUserData } =
+export const { uploadAvatar, removeUploadAvatar } =
   user.actions;

@@ -47,25 +47,25 @@ const ProfileSettings: React.FC<{ onToggle(): void }> = ({ onToggle }) => {
           ? data
           : ({ update_profile: { profile: {} } } as UpdateData);
 
-        const { profile } = cache.readQuery<{profile: UserData}>({
+        const { profile } = cache.readQuery<{ profile: UserData }>({
           query: PROFILE,
           variables: { id: update_profile.profile.id },
-        }) || {profile: {} as UserData};
+        }) || { profile: {} as UserData };
 
         cache.writeQuery({
           query: PROFILE,
-          variables: {id: update_profile.profile.id},
+          variables: { id: update_profile.profile.id },
           data: {
-            profile: {...profile, ...update_profile.profile},
-          }
-        })
+            profile: { ...profile, ...update_profile.profile },
+          },
+        });
 
         cache.writeQuery({
           query: CURRENT_PROFILE,
           data: {
-            current_profile: {...current_profile, ...update_profile.profile},
-          }
-        })
+            current_profile: { ...current_profile, ...update_profile.profile },
+          },
+        });
       },
     });
 
@@ -104,7 +104,14 @@ const ProfileSettings: React.FC<{ onToggle(): void }> = ({ onToggle }) => {
         initialValues={{ ...current_profile } as UserData}
         render={({ form, values }) => (
           <>
-            <Field name="avatar" onBlur={() => {}} component={Avatar} />
+            <Field name="avatar">
+              {(props) => (
+                <Avatar
+                  propsInput={props}
+                  currentImage={current_profile.avatar}
+                />
+              )}
+            </Field>
 
             <FieldsWrap>
               <NameInputs>

@@ -6,6 +6,7 @@ import {
   watchForgotPassword,
 } from "./auth";
 import { watchSignOut } from "./auth/saga";
+import { watchUploadAvatar } from "./user";
 
 export default function* rootSaga() {
   yield all([
@@ -14,5 +15,6 @@ export default function* rootSaga() {
     watchValidateToken(),
     watchForgotPassword(),
     watchSignOut(),
+    watchUploadAvatar()
   ]);
 }
