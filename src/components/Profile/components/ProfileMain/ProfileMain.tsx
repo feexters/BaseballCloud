@@ -1,4 +1,3 @@
-import { ProgressIcon } from "assets";
 import {
   BATTING,
   BATTING_CHARTS,
@@ -7,14 +6,23 @@ import {
   COMPARISON,
   SESSION,
 } from "lib/const";
+import { BATTING_SUMMARY as BATTING_QUERY, client } from "apollo";
 import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 import { Batting, Comparison, SessionReports } from "./components";
+import { ProgressLine } from "./components";
+import { BattingSummaryData } from "lib/interfaces";
 
-const ProfileMain = () => {
+const ProfileMain: React.FC<{ id: string }> = ({ id }) => {
   const [currentWindow, setCurrentWindow] = useState(BATTING);
   const [battingWindow, setBattingWindow] = useState(BATTING_SUMMARY);
   const [isOpenDropDown, setIsOpenDropDown] = useState(false);
+
+  const {
+    batting_summary: { top_values },
+  } = client.readQuery({ query: BATTING_QUERY, variables: { id: id } }) as {
+    batting_summary: BattingSummaryData;
+  };
 
   const onSelect = (value: string) => {
     setIsOpenDropDown(false);
@@ -23,48 +31,34 @@ const ProfileMain = () => {
 
   const getWindow = useMemo(() => {
     if (currentWindow === BATTING) {
-      return <Batting window={battingWindow} />;
+      return <Batting window={battingWindow} id={id} />;
     } else if (currentWindow === SESSION) {
-      return <SessionReports />;
+      return <SessionReports id={id} />;
     } else {
-      return <Comparison />;
+      return <Comparison id={id} />;
     }
-  }, [currentWindow, battingWindow]);
+  }, [currentWindow, battingWindow, id]);
 
   return (
     <>
       <Wrap>
         <Title>Top Batting Values</Title>
         <ProgressWrap>
-          <Progress>
-            <ProgressName>
-              <Text>Exit Velocity</Text>
-              <ProgressValue>N/A</ProgressValue>
-            </ProgressName>
-            <ProgressIconWrap>
-              <ProgressIcon />
-            </ProgressIconWrap>
-          </Progress>
-
-          <Progress>
-            <ProgressName>
-              <Text>Carry Distance</Text>
-              <ProgressValue>N/A</ProgressValue>
-            </ProgressName>
-            <ProgressIconWrap>
-              <ProgressIcon />
-            </ProgressIconWrap>
-          </Progress>
-
-          <Progress>
-            <ProgressName>
-              <Text>Launch Angle</Text>
-              <ProgressValue>N/A</ProgressValue>
-            </ProgressName>
-            <ProgressIconWrap>
-              <ProgressIcon />
-            </ProgressIconWrap>
-          </Progress>
+          <ProgressLine
+            name="Exit Velocity"
+            value={top_values.length ? top_values[0].exit_velocity : 0}
+            maxValue={150}
+          />
+          <ProgressLine
+            name="Distance"
+            value={top_values.length ? top_values[0].distance : 0}
+            maxValue={500}
+          />
+          <ProgressLine
+            name="Launch Angle"
+            value={top_values.length ? top_values[0].launch_angle : 0}
+            maxValue={50}
+          />
         </ProgressWrap>
       </Wrap>
 
@@ -205,13 +199,6 @@ const Text = styled.p`
   font-size: 16px;
 `;
 
-const Progress = styled.div`
-  display: flex;
-  padding: 16px 24px 0 0;
-  align-items: stretch;
-  flex-direction: column;
-`;
-
 const ProgressWrap = styled.div`
   display: flex;
   width: 100%;
@@ -219,24 +206,6 @@ const ProgressWrap = styled.div`
   @media (max-width: ${maxWidth}) {
     flex-direction: column;
   }
-`;
-
-const ProgressName = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const ProgressValue = styled.span`
-  font-size: 16px;
-  color: #667784;
-  font-weight: 700;
-`;
-
-const ProgressIconWrap = styled.div`
-  max-width: 100%;
-  height: 4px;
-  margin-top: 10px;
 `;
 
 export default ProfileMain;

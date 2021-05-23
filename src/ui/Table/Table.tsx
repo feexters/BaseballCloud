@@ -1,26 +1,29 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { Pagination } from "ui";
+import { MainLoader } from "ui/MainLoader";
 import { Row } from "./components";
 
-interface TableProps {
+interface TableProps<T> {
   titles: {
-    key: number;
+    key: keyof T;
     title: string;
   }[];
-  values: { id: string | number; values: any[] }[];
+  values: { id: string; values: T }[];
+  loading?: boolean;
+  innerTitles?: {
+    key: keyof T;
+    title: string;
+  }[];
+  minHeight?: string;
 }
 
-const Table: React.FC<TableProps> = ({ titles, values, children }) => {
-  const [currentPage, setCurrentPage] = useState(0);
-  const totalValues = values.length;
-  const totalPages = Math.floor(totalValues / 10);
-
-  const openNewPage = (page: number) => {
-    setCurrentPage(page);
-    console.log("Current page: ", page);
-  };
-
+const Table: React.FC<TableProps<{ [key: string]: any }>> = ({
+  titles,
+  values,
+  loading = false,
+  innerTitles,
+  minHeight = "",
+}) => {
   return (
     <Wrap>
       <Header col={titles.length}>
@@ -28,24 +31,23 @@ const Table: React.FC<TableProps> = ({ titles, values, children }) => {
           <HeaderTitle key={title.key}>{title.title}</HeaderTitle>
         ))}
       </Header>
-      {values.map((item) => (
-        <Row
-          key={item.id}
-          totalColumns={titles.length}
-          titles={titles}
-          values={item.values}
-        >
-          {children}
-        </Row>
-      ))}
-      {totalPages !== 0 && (
-        <PaginationWrap>
-          <Pagination
-            maxPages={totalPages + 1}
-            onChange={openNewPage}
-            current={currentPage}
-          />
-        </PaginationWrap>
+      {loading ? (
+        <LoadingWrap minHeight={minHeight}>
+          <MainLoader />
+        </LoadingWrap>
+      ) : (
+        <RowsWrap minHeight={values.length ? minHeight : ''}>
+          {values.map((item) => (
+            <Row
+              key={item.id}
+              totalColumns={titles.length}
+              titles={titles}
+              values={item.values}
+            >
+              {innerTitles && <Table titles={innerTitles} values={[item]} />}
+            </Row>
+          ))}
+        </RowsWrap>
       )}
     </Wrap>
   );
@@ -55,24 +57,24 @@ const maxWidth = "640px";
 
 const Wrap = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-
-  @media (max-width: ${maxWidth}) {
-    flex-direction: row;
-    background-color: #f7f8f9;
-    border-radius: 4px;
-
-    &:hover {
-      background-color: #ecf8ff;
-    }
-  }
 `;
 
-const PaginationWrap = styled.div`
+const RowsWrap = styled.div<{ minHeight: string }>`
+  ${({ minHeight }) => minHeight && `min-height: ${minHeight};`}
   display: flex;
-  align-self: center;
-  margin-top: 10px;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const LoadingWrap = styled.div<{ minHeight: string }>`
+  ${({ minHeight }) => minHeight && `min-height: ${minHeight};`}
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Header = styled.div<{ col: number }>`

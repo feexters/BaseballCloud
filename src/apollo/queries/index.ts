@@ -3,3 +3,7 @@ export { PROFILE } from "./profile";
 export { SCHOOLS } from "./schools";
 export { TEAMS } from "./teams";
 export { FACILITIES } from "./facilities";
+export { BATTING_SUMMARY } from './batting-summary';
+export { PROFILE_EVENTS } from './profile-events';
+export { BATTING_LOG } from './batting-log';
+export { BATTING_GRAPH } from './batting-graph';

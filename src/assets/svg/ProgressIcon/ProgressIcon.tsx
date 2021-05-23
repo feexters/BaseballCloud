@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const ProgressIcon = () => {
+const ProgressIcon: React.FC<{percent: number}> = ({percent}) => {
   return (
     <Svg viewBox="0 0 100 1" preserveAspectRatio="none">
       <path
@@ -17,7 +17,7 @@ const ProgressIcon = () => {
            L 99.5,0.5"
         strokeLinecap="round"
         stroke="#ffd01a"
-        strokeWidth="1"
+        strokeWidth={percent? `${percent * 2}` : '1'}
         fillOpacity="0"
       ></Path>
     </Svg>

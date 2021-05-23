@@ -1,3 +1,4 @@
+import { BattingData } from "./batting-data";
 import { FacilitiesData } from "./facilities-data";
 import { SchoolData } from "./school-data";
 import { TeamData } from "./team-data";
@@ -20,4 +21,5 @@ export interface UserData {
   teams: TeamData[];
   throws_hand: string;
   weight: number;
+  batting_top_values: BattingData[]
 }

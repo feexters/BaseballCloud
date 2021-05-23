@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-interface RowProps {
+interface RowProps<T> {
   totalColumns: number;
   titles: {
-    key: number;
+    key: keyof T;
     title: string;
   }[];
-  values: any[];
+  values: T;
 }
 
-const Row: React.FC<RowProps> = ({
+const Row: React.FC<RowProps<{ [key: string]: any }>> = ({
   totalColumns,
   titles,
   values,
@@ -48,21 +48,35 @@ const Row: React.FC<RowProps> = ({
 const maxWidth = "640px";
 
 const Wrap = styled.div<{ isOpen: boolean }>`
-width: 100%;
+  width: 100%;
+  margin-top: 5px;
   ${({ isOpen }) =>
     isOpen &&
     `box-shadow: 0 0 6px 1px rgb(72 187 255 / 63%);
     border-radius: 4px;`}
+
+  @media (max-width: ${maxWidth}) {
+    background-color: #f7f8f9;
+    border-radius: 4px;
+    margin-top: 10px;
+    
+    &:hover {
+      background-color: #ecf8ff;
+    }
+  }
 `;
 
-const RowWrap = styled.div<{ totalColumns: number, isCanOpen: boolean, isOpen: boolean }>`
+const RowWrap = styled.div<{
+  totalColumns: number;
+  isCanOpen: boolean;
+  isOpen: boolean;
+}>`
+  min-height: 44px;
   display: grid;
   align-items: center;
-  min-height: 44px;
   grid-template-columns: repeat(${({ totalColumns }) => totalColumns}, 1fr);
-  align-items: center;
   border-radius: 4px;
-  background-color: ${({isOpen}) => isOpen ? '#ecf8ff' : '#f7f8f9'};
+  background-color: ${({ isOpen }) => (isOpen ? "#ecf8ff" : "#f7f8f9")};
   ${({ isCanOpen }) => isCanOpen && `cursor: pointer;`}
 
   &:hover {
@@ -77,9 +91,9 @@ const RowWrap = styled.div<{ totalColumns: number, isCanOpen: boolean, isOpen: b
 `;
 
 const InnerComponent = styled.div`
-  background-color: white; 
+  background-color: white;
   padding: 16px;
-`
+`;
 
 const ContentWrap = styled.div`
   display: grid;

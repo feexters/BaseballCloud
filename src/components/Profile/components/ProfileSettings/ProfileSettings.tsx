@@ -19,8 +19,18 @@ const hands = [
   { id: "l", name: "L" },
 ];
 
+interface UpdateData {
+  update_profile: {
+    profile: UserData;
+  };
+}
+
 const ProfileSettings: React.FC<{ onToggle(): void }> = ({ onToggle }) => {
-  const [submitProfile, { loading }] = useMutation(UPDATE_PROFILE);
+  const [submitProfile, { loading }] = useMutation<UpdateData>(UPDATE_PROFILE);
+
+  const { current_profile } = client.readQuery({
+    query: CURRENT_PROFILE,
+  });
 
   const onSubmit = async (user: UserData) => {
     const submitUser = JSON.parse(JSON.stringify(user)) as UserData;
@@ -32,23 +42,36 @@ const ProfileSettings: React.FC<{ onToggle(): void }> = ({ onToggle }) => {
 
     await submitProfile({
       variables: { form: submitUser },
-      update: (cache, { data: { update_profile } }) => {
-        cache.evict({
-          fieldName: "profile",
-          broadcast: false,
-        });
-        cache.writeQuery({ query: PROFILE, variables: {id: update_profile.profile.id}, data: update_profile });
-        cache.writeQuery({ query: CURRENT_PROFILE,  data: {current_profile: update_profile.profile} });
+      update: (cache, { data }) => {
+        const { update_profile } = data
+          ? data
+          : ({ update_profile: { profile: {} } } as UpdateData);
+
+        const { profile } = cache.readQuery<{profile: UserData}>({
+          query: PROFILE,
+          variables: { id: update_profile.profile.id },
+        }) || {profile: {} as UserData};
+
+        cache.writeQuery({
+          query: PROFILE,
+          variables: {id: update_profile.profile.id},
+          data: {
+            profile: {...profile, ...update_profile.profile},
+          }
+        })
+
+        cache.writeQuery({
+          query: CURRENT_PROFILE,
+          data: {
+            current_profile: {...current_profile, ...update_profile.profile},
+          }
+        })
       },
     });
 
     onToggle();
     toastr.success("", "", toastrProfileOptions);
   };
-
-  const { current_profile } = client.readQuery({
-    query: CURRENT_PROFILE,
-  });
 
   const onValidate = (user: UserData) => {
     const errors = {

@@ -1,32 +1,121 @@
-import { useAppSelector } from "lib/hooks";
 import React, { useState } from "react";
 import styled from "styled-components";
 import avatarImage from "assets/images/user.png";
 import { DropDown, DropDownPanel } from "ui";
 import { Field, Form } from "react-final-form";
 import { SearchIcon } from "assets";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { client, PROFILE } from "apollo";
+import {
+  BattingData,
+  ProfileNamesData,
+  ProfileNamesFilters,
+  UserData,
+} from "lib/interfaces";
+import { PROFILE_NAMES } from "apollo/queries/profile-names";
+import Loader from "react-loader-spinner";
 
-const Comparison = () => {
-  const battingSelectValues = ["Distance", "LaunchAngle", "Exit Velocity"];
+const battingSelectValues = ["Distance", "Launch Angle", "Exit Velocity"];
+const battingSelectKeys: { key: keyof BattingData; title: string }[] = [
+  {
+    key: "distance",
+    title: "Distance",
+  },
+  {
+    key: "launch_angle",
+    title: "Launch Angle",
+  },
+  {
+    key: "exit_velocity",
+    title: "Exit Velocity",
+  },
+];
 
-  const { user } = useAppSelector((state) => state);
+interface ProfileNamesResponse {
+  profile_names: {
+    profile_names: ProfileNamesData[];
+  };
+}
 
+const Comparison: React.FC<{ id: string }> = ({ id }) => {
+  const [searchValue, setSearchValue] = useState("");
   const [battingSelect, setBattingSelect] = useState(battingSelectValues[0]);
   const [selectedPlayer, setSelectedPlayer] = useState("");
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+  const [hoverPlayer, setHoverPlayer] = useState(0);
 
-  const players = [
-    { id: "0", value: "sdsc" },
-    { id: "1", value: "sdscvdfevfd" },
-    { id: "2", value: "vfev" },
-  ];
+  const { profile } = client.readQuery<{ profile: UserData }>({
+    query: PROFILE,
+    variables: { id },
+  }) || { profile: {} as UserData };
+
+  const { loading: loadingProfiles, data } = useQuery<
+    ProfileNamesResponse,
+    { input: ProfileNamesFilters }
+  >(PROFILE_NAMES, {
+    variables: {
+      input: {
+        position: profile.position,
+        player_name: searchValue,
+      },
+    },
+  });
+
+  const {
+    profile_names: { profile_names },
+  } = data
+    ? data
+    : ({ profile_names: { profile_names: [] } } as ProfileNamesResponse);
+
+  const [getProfile, { loading: loadingProfile, data: comparisonData }] =
+    useLazyQuery<{
+      profile: UserData;
+    }>(PROFILE, { variables: { id: selectedPlayer } });
+
+  const { profile: comparisonProfile } = comparisonData
+    ? comparisonData
+    : { profile: {} as UserData };
 
   const onCloseDropDown = () => {
-    setTimeout(() => setIsDropDownOpen(false), 250)
-  }
+    setTimeout(() => setIsDropDownOpen(false), 250);
+  };
+
+  const onKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.code === "Enter" && profile_names[hoverPlayer]) {
+      onSelect(profile_names[hoverPlayer].id);
+    } else if (event.code === "ArrowUp") {
+      setHoverPlayer(
+        hoverPlayer - 1 < 0 ? profile_names.length - 1 : hoverPlayer - 1
+      );
+    } else if (event.code === "ArrowDown") {
+      setHoverPlayer(
+        hoverPlayer + 1 > profile_names.length - 1 ? 0 : hoverPlayer + 1
+      );
+    }
+  };
 
   const onSelect = (id: string) => {
     setSelectedPlayer(id);
+    getProfile();
+  };
+
+  const findBattingValue = (
+    batting: BattingData[],
+    type: string,
+    select: string
+  ): number | string => {
+    const battingType = batting.find((item) => item.pitch_type === type);
+
+    if (battingType) {
+      const key = battingSelectKeys.find((item) => item.title === select)!.key;
+      if (battingType[key]) {
+        return battingType[key]!;
+      } else {
+        return "-";
+      }
+    }
+
+    return "-";
   };
 
   return (
@@ -34,16 +123,23 @@ const Comparison = () => {
       <ComparisonWrap>
         <ComparisonRow>
           <ComparisonColumn>
-            <PlayerAvatar image={user.data.avatar} />{" "}
-            {user.data.first_name + " " + user.data.last_name}
+            <PlayerAvatar image={profile.avatar} />
+            {profile.first_name + " " + profile.last_name}
           </ComparisonColumn>
           <ComparisonColumn>
-            <PlayerAvatar image={user.data.avatar} />{" "}
+            {(loadingProfiles || loadingProfile) && (
+              <LoaderWrap>
+                <Loader type="ThreeDots" color="#48BBFF" width={30} />
+              </LoaderWrap>
+            )}
+            <PlayerAvatar image={comparisonProfile.avatar} />
             <Form
-              onSubmit={() => {
-                console.log("submit");
+              onSubmit={() => {}}
+              initialValues={{
+                search: comparisonProfile.first_name
+                  ? `${comparisonProfile.first_name} ${comparisonProfile.last_name}`
+                  : "",
               }}
-              initialValues={{ search: "" }}
               render={({ form }) => (
                 <Field name="search">
                   {({ input }) => (
@@ -51,15 +147,30 @@ const Comparison = () => {
                       <SearchInput
                         {...input}
                         onBlur={onCloseDropDown}
+                        onChange={(event) => {
+                          input.onChange(event);
+                          setSearchValue(event.target.value);
+                          setHoverPlayer(0);
+                        }}
+                        onKeyDown={onKeyPress}
                         onFocus={() => setIsDropDownOpen(true)}
                         placeholder={"Enter player name"}
                         autoComplete={"off"}
                       />
                       <DropDownPanel
                         isOpen={isDropDownOpen}
-                        items={players}
+                        items={profile_names.map((item) => {
+                          return {
+                            id: item.id,
+                            value: `${item.first_name} ${item.last_name}`,
+                          };
+                        })}
                         onSelect={onSelect}
-                        active={selectedPlayer}
+                        active={
+                          profile_names[hoverPlayer]
+                            ? profile_names[hoverPlayer].id
+                            : ""
+                        }
                       />
                       <SearchIcon />
                     </SearchWrap>
@@ -70,21 +181,34 @@ const Comparison = () => {
           </ComparisonColumn>
         </ComparisonRow>
         <ComparisonRow>
-          <ComparisonColumn>Age:&nbsp;&nbsp;{user.data.age}</ComparisonColumn>
-          <ComparisonColumn>Age:&nbsp;&nbsp;</ComparisonColumn>
+          <ComparisonColumn>Age:&nbsp;&nbsp;{profile.age}</ComparisonColumn>
+          <ComparisonColumn>
+            Age:&nbsp;&nbsp;{comparisonProfile.age || "-"}
+          </ComparisonColumn>
         </ComparisonRow>
         <ComparisonRow>
           <ComparisonColumn>
             Height:&nbsp;&nbsp;
-            {user.data.feet + " ft " + (user.data.inches || "0") + " in"}
+            {profile.feet + " ft " + (profile.inches || "0") + " in"}
           </ComparisonColumn>
-          <ComparisonColumn>Height:&nbsp;&nbsp;</ComparisonColumn>
+          <ComparisonColumn>
+            Height:&nbsp;&nbsp;
+            {comparisonProfile.feet
+              ? comparisonProfile.feet +
+                " ft " +
+                (comparisonProfile.inches || "0") +
+                " in"
+              : "-"}
+          </ComparisonColumn>
         </ComparisonRow>
         <ComparisonRow>
           <ComparisonColumn>
-            Weight:&nbsp;&nbsp;{user.data.weight + " lbs"}
+            Weight:&nbsp;&nbsp;{profile.weight + " lbs"}
           </ComparisonColumn>
-          <ComparisonColumn>Weight:&nbsp;&nbsp;</ComparisonColumn>
+          <ComparisonColumn>
+            Weight:&nbsp;&nbsp;
+            {comparisonProfile.weight ? comparisonProfile.weight + " lbs" : "-"}
+          </ComparisonColumn>
         </ComparisonRow>
       </ComparisonWrap>
       <DropDownWrap>
@@ -95,23 +219,75 @@ const Comparison = () => {
       <ComparisonWrap>
         <TableRow>
           <TableValue>Fastball</TableValue>
-          <TableValue>-</TableValue>
-          <TableValue>-</TableValue>
+          <TableValue>
+            {findBattingValue(
+              profile.batting_top_values,
+              "Fastball",
+              battingSelect
+            )}
+          </TableValue>
+          <TableValue>
+            {comparisonProfile.batting_top_values &&
+              findBattingValue(
+                comparisonProfile.batting_top_values,
+                "Fastball",
+                battingSelect
+              )}
+          </TableValue>
         </TableRow>
         <TableRow>
           <TableValue>Curveball</TableValue>
-          <TableValue>-</TableValue>
-          <TableValue>-</TableValue>
+          <TableValue>
+            {findBattingValue(
+              profile.batting_top_values,
+              "Curveball",
+              battingSelect
+            )}
+          </TableValue>
+          <TableValue>
+            {comparisonProfile.batting_top_values &&
+              findBattingValue(
+                comparisonProfile.batting_top_values,
+                "Curveball",
+                battingSelect
+              )}
+          </TableValue>
         </TableRow>
         <TableRow>
           <TableValue>Changeup</TableValue>
-          <TableValue>-</TableValue>
-          <TableValue>-</TableValue>
+          <TableValue>
+            {findBattingValue(
+              profile.batting_top_values,
+              "Changeup",
+              battingSelect
+            )}
+          </TableValue>
+          <TableValue>
+            {comparisonProfile.batting_top_values &&
+              findBattingValue(
+                comparisonProfile.batting_top_values,
+                "Changeup",
+                battingSelect
+              )}
+          </TableValue>
         </TableRow>
         <TableRow>
           <TableValue>Slider</TableValue>
-          <TableValue>-</TableValue>
-          <TableValue>-</TableValue>
+          <TableValue>
+            {findBattingValue(
+              profile.batting_top_values,
+              "Slider",
+              battingSelect
+            )}
+          </TableValue>
+          <TableValue>
+            {comparisonProfile.batting_top_values &&
+              findBattingValue(
+                comparisonProfile.batting_top_values,
+                "Slider",
+                battingSelect
+              )}
+          </TableValue>
         </TableRow>
       </ComparisonWrap>
     </>
@@ -148,6 +324,13 @@ const ComparisonRow = styled.div`
 const ComparisonColumn = styled.div`
   display: flex;
   font-size: 1.6rem;
+  position: relative;
+`;
+
+const LoaderWrap = styled.div`
+  position: absolute;
+  top: -20px;
+  left: -35px;
 `;
 
 const DropDownWrap = styled.div`

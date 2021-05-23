@@ -11,28 +11,12 @@ const DropDown: React.FC<DropDownProps> = ({ items, onSelect, children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropDownRef = useRef<HTMLDivElement>(null);
 
-  const onBlur = (event: MouseEvent) => {
-    if (!dropDownRef.current!.contains(event.target as Node)) {
-      onClose();
-    }
-  };
-
   const onClose = () => {
     setIsOpen(false);
-    removeBlurListener();
   };
 
   const onOpen = () => {
     setIsOpen(true);
-    addBlurListener();
-  };
-
-  const onToggle = () => {
-    if (isOpen) {
-      onClose();
-    } else {
-      onOpen();
-    }
   };
 
   const onClick = (value: string) => {
@@ -40,17 +24,9 @@ const DropDown: React.FC<DropDownProps> = ({ items, onSelect, children }) => {
     onClose();
   };
 
-  const addBlurListener = () => {
-    document.addEventListener("mousedown", onBlur);
-  };
-
-  const removeBlurListener = () => {
-    document.removeEventListener("mousedown", onBlur);
-  };
-
   return (
     <Wrap ref={dropDownRef}>
-      <DropDownToggle onClick={onToggle}>
+      <DropDownToggle onFocus={onOpen} onBlur={onClose} tabIndex={0}>
         {children}
         <Icon isOpen={isOpen}>
           <DropDownIcon />
@@ -59,7 +35,7 @@ const DropDown: React.FC<DropDownProps> = ({ items, onSelect, children }) => {
         <DropDownWrap>
           <DropDownPanel>
             {items.map((item) => (
-              <Select key={item} onClick={() => onClick(item)}>
+              <Select key={item} onMouseDown={() => onClick(item)}>
                 {item}
               </Select>
             ))}
@@ -134,7 +110,6 @@ const DropDownWrap = styled.div`
   position: absolute;
   top: 100%;
   right: -25px;
-  /* left: -100px; */
 `;
 
 const Select = styled.div`

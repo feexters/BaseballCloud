@@ -13,24 +13,34 @@ import { client, PROFILE } from "apollo";
 import { UserData } from "lib/interfaces";
 import { positions, schoolYear } from "lib/const";
 
-const ProfileInfo: React.FC<{ onToggle(): void, id: string }> = ({ onToggle, id }) => {
-  const { profile } = client.readQuery({query: PROFILE, variables: {id: id}})
-  console.log(profile)
-  const data = profile as UserData;
+const ProfileInfo: React.FC<{ onToggle(): void; id: string }> = ({
+  onToggle,
+  id,
+}) => {
+  const { profile: data } = client.readQuery<{ profile: UserData }>({
+    query: PROFILE,
+    variables: { id },
+  }) || { profile: {} as UserData };
 
   return (
     <Wrap>
       <TopInfo>
         <UserPhoto image={data.avatar} />
         <UserName>{data.first_name + " " + data.last_name}</UserName>
-        <Position mainTheme>{positions.find(item => item.id === data.position)?.name}</Position>
-        {data.position2 && <Position>{positions.find(item => item.id === data.position2)?.name}</Position>}
+        <Position mainTheme>
+          {positions.find((item) => item.id === data.position)?.name}
+        </Position>
+        {data.position2 && (
+          <Position>
+            {positions.find((item) => item.id === data.position2)?.name}
+          </Position>
+        )}
         <Change onClick={onToggle}>
           <EditIcon />
         </Change>
       </TopInfo>
 
-       <InfoWithIcon>
+      <InfoWithIcon>
         <InfoWithIconName>
           <InfoIcon>
             <AgeIcon />
@@ -92,7 +102,9 @@ const ProfileInfo: React.FC<{ onToggle(): void, id: string }> = ({ onToggle, id 
       {data.school_year && (
         <InfoWrap>
           <InfoTitle>School Year</InfoTitle>
-          <InfoText>{schoolYear.find(item => item.id === data.school_year)?.name}</InfoText>
+          <InfoText>
+            {schoolYear.find((item) => item.id === data.school_year)?.name}
+          </InfoText>
         </InfoWrap>
       )}
 

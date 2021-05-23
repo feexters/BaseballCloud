@@ -5,18 +5,27 @@ interface DropDownPanelData {
   items: {
     id: string;
     value: string;
-  }[],
+  }[];
   active?: string;
   onSelect(id: string): void;
   isOpen: boolean;
 }
 
-const DropDownPanel: React.FC<DropDownPanelData> = ({items, active = '', onSelect, isOpen}) => {
+const DropDownPanel: React.FC<DropDownPanelData> = ({
+  items,
+  active = "",
+  onSelect,
+  isOpen,
+}) => {
   return (
-    <DropDownWrap isOpen={isOpen} >
+    <DropDownWrap isOpen={isOpen && items.length !== 0}>
       <DropDownPanelWrap>
         {items.map((item) => (
-          <Select key={item.id} isActive={active === item.id} onClick={() => onSelect(item.id)}>
+          <Select
+            key={item.id}
+            isActive={active === item.id}
+            onClick={() => onSelect(item.id)}
+          >
             {item.value}
           </Select>
         ))}
@@ -59,17 +68,18 @@ const DropDownPanelWrap = styled.div`
   }
 `;
 
-const DropDownWrap = styled.div<{isOpen: boolean}>`
+const DropDownWrap = styled.div<{ isOpen: boolean }>`
   width: 100%;
   position: absolute;
   top: 100%;
   left: 0;
-  display: ${({isOpen}) => isOpen ? 'block' : 'none'};
+  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
 `;
 
-const Select = styled.div<{isActive: boolean}>`
+const Select = styled.div<{ isActive: boolean }>`
   padding: 8px 16px;
-  background: ${({isActive}) => isActive ? 'rgba(72, 187, 255, 0.1)' : "white"};
+  background: ${({ isActive }) =>
+    isActive ? "rgba(72, 187, 255, 0.1)" : "white"};
   line-height: 1;
   color: #788b99;
   font-size: 16px;
