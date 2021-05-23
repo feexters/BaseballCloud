@@ -32,6 +32,7 @@ export const auth = createSlice({
       state.headers = {} as Headers;
       Auth.deleteHeaders();
       state.authorized = false;
+      state.isValid = false
     },
     setIsValidate(state, action: PayloadAction<boolean>) {
       state.isValid = action.payload;

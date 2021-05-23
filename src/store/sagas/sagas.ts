@@ -1,5 +1,11 @@
-import {all} from '@redux-saga/core/effects';
-import {watchSignIn, watchSignUp, watchValidateToken, watchForgotPassword} from './auth';
+import { all } from "@redux-saga/core/effects";
+import {
+  watchSignIn,
+  watchSignUp,
+  watchValidateToken,
+  watchForgotPassword,
+} from "./auth";
+import { watchSignOut } from "./auth/saga";
 
 export default function* rootSaga() {
   yield all([
@@ -7,5 +13,6 @@ export default function* rootSaga() {
     watchSignIn(),
     watchValidateToken(),
     watchForgotPassword(),
+    watchSignOut(),
   ]);
 }

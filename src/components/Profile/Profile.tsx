@@ -10,8 +10,11 @@ import {
   ProfileStart,
 } from "./components";
 import { MainLoader } from "ui";
+import { useParams } from "react-router";
 
 const Profile: React.FC<{ id: string }> = ({ id }) => {
+  const profileId = useParams()
+  
   const { loading: loadingProfile, data } = useQuery(PROFILE, {
     variables: { id: id },
   });

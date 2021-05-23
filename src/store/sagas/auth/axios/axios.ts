@@ -32,6 +32,15 @@ export async function fetchSignUp(user: SignUpData) {
     .catch(error => error.response);
 }
 
+export async function fetchSignOut() {
+  return await (
+    await instance()
+  )
+    .delete("auth/sign_out")
+    .then((response) =>  response)
+    .catch(error => error.response);
+}
+
 export async function fetchForgotPassword(email: string) {
   const data = {
     email: email,

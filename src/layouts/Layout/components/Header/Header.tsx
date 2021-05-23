@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { LogoIcon, TriangleIcon } from "assets";
 import { useHistory, useLocation } from "react-router-dom";
-import { ROUTE_LEADERBOARD, ROUTE_NETWORK, ROUTE_PROFILE } from "lib/const";
-import { useAppSelector } from "lib/hooks";
+import { ROUTE_LEADERBOARD, ROUTE_LOGIN, ROUTE_NETWORK, ROUTE_PROFILE } from "lib/const";
+import { useAppDispatch, useAppSelector } from "lib/hooks";
 import avatarImage from "assets/images/user.png";
 import { DropDownPanel } from "ui";
 import { client, CURRENT_PROFILE } from "apollo";
+import { authSingOut } from "store";
 
 const selectMenu = [
   { id: "0", value: "My Profile" },
@@ -19,6 +20,7 @@ const Header: React.FC<{ isLoading: boolean }> = ({ isLoading }) => {
   const {
     auth: { isValid },
   } = useAppSelector((state) => state);
+  const dispatch = useAppDispatch()
 
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
@@ -30,7 +32,7 @@ const Header: React.FC<{ isLoading: boolean }> = ({ isLoading }) => {
     if (id === selectMenu[0].id) {
       history.push(ROUTE_PROFILE);
     } else {
-      // dispatch(...)
+      dispatch(authSingOut())
     }
 
     setIsDropDownOpen(false);

@@ -42,6 +42,9 @@ function* signInWorker({
       );
     }
   } catch (e) {
+    yield put(
+      finishAuthSubmitting("Invalid login credentials. Please try again.")
+    );
     console.error(e);
   }
 }
