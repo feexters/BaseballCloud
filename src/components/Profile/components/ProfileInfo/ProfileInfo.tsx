@@ -6,10 +6,12 @@ import {
   BatsIcon,
   EditIcon,
   HeightIcon,
+  SubscribeIcon,
   ThrowIcon,
+  UnsubscribeIcon,
   WeightIcon,
 } from "assets";
-import { client, PROFILE } from "apollo";
+import { client, CURRENT_PROFILE, PROFILE } from "apollo";
 import { UserData } from "lib/interfaces";
 import { positions, schoolYear } from "lib/const";
 
@@ -21,6 +23,12 @@ const ProfileInfo: React.FC<{ onToggle(): void; id: string }> = ({
     query: PROFILE,
     variables: { id },
   }) || { profile: {} as UserData };
+
+  const { current_profile } = client.readQuery<{ current_profile: UserData }>({
+    query: CURRENT_PROFILE,
+  }) || { current_profile: {} as UserData };
+
+  console.log(data)
 
   return (
     <Wrap>
@@ -36,7 +44,13 @@ const ProfileInfo: React.FC<{ onToggle(): void; id: string }> = ({
           </Position>
         )}
         <Change onClick={onToggle}>
-          <EditIcon />
+          {current_profile.id === data.id ? (
+            <EditIcon />
+          ) : data.favorite ? (
+            <UnsubscribeIcon />
+          ) : (
+            <SubscribeIcon />
+          )}
         </Change>
       </TopInfo>
 

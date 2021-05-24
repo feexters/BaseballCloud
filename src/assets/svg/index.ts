@@ -13,3 +13,5 @@ export { DropDownIcon } from './DropDownIcon';
 export { SearchIcon } from './SearchIcon';
 export { DateIcon } from './DateIcon';
 export { TriangleIcon } from './TriangleIcon';
+export { UnsubscribeIcon } from './UnsubscribeIcon';
+export { SubscribeIcon } from './SubscribeIcon';

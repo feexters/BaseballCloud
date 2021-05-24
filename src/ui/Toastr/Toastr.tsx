@@ -50,5 +50,24 @@ export const toastrProfileOptions = {
     </div>
   ),
 };
+export const toastrSubscribeOption = (subscribe: boolean) => {
+  return {
+    timeOut: 3000,
+    component: (
+      <div>
+        <ToastrTitle>Success</ToastrTitle>
+        {subscribe ? (
+          <ToastrMessage>
+            This profile added to favorite list successfully.
+          </ToastrMessage>
+        ) : (
+          <ToastrMessage>
+            This profile removed from favorite list successfully.
+          </ToastrMessage>
+        )}
+      </div>
+    ),
+  };
+};
 
 export default Toastr;

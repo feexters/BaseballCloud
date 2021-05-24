@@ -13,6 +13,7 @@ export interface UserData {
   first_name: string;
   id: string;
   inches: number;
+  favorite: boolean;
   last_name: string;
   position: string;
   position2: string;

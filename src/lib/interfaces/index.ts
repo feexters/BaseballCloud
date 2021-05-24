@@ -12,3 +12,4 @@ export type { ProfileEventsResponse } from "./profile-events-response";
 export type { ProfileEventsFilters } from './profile-events-filters';
 export type { ProfileNamesData } from './profile-names-data';
 export type { ProfileNamesFilters } from './profile-names-filters';
+export type { SubscribeData } from './subscribe-data';

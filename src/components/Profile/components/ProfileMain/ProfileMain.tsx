@@ -6,12 +6,16 @@ import {
   COMPARISON,
   SESSION,
 } from "lib/const";
-import { BATTING_SUMMARY as BATTING_QUERY, client } from "apollo";
+import {
+  BATTING_SUMMARY as BATTING_QUERY,
+  client,
+  CURRENT_PROFILE,
+} from "apollo";
 import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 import { Batting, Comparison, SessionReports } from "./components";
 import { ProgressLine } from "./components";
-import { BattingSummaryData } from "lib/interfaces";
+import { BattingSummaryData, UserData } from "lib/interfaces";
 
 const ProfileMain: React.FC<{ id: string }> = ({ id }) => {
   const [currentWindow, setCurrentWindow] = useState(BATTING);
@@ -23,6 +27,10 @@ const ProfileMain: React.FC<{ id: string }> = ({ id }) => {
   } = client.readQuery({ query: BATTING_QUERY, variables: { id: id } }) as {
     batting_summary: BattingSummaryData;
   };
+
+  const { current_profile } = client.readQuery<{ current_profile: UserData }>({
+    query: CURRENT_PROFILE,
+  }) || { current_profile: {} as UserData };
 
   const onSelect = (value: string) => {
     setIsOpenDropDown(false);
@@ -62,10 +70,12 @@ const ProfileMain: React.FC<{ id: string }> = ({ id }) => {
         </ProgressWrap>
       </Wrap>
 
-      <Wrap>
-        <Title>Recent Session Reports</Title>
-        <Text>No data currently linked to this profile</Text>
-      </Wrap>
+      {current_profile.id === id && (
+        <Wrap>
+          <Title>Recent Session Reports</Title>
+          <Text>No data currently linked to this profile</Text>
+        </Wrap>
+      )}
 
       <Wrap>
         <ButtonList>
@@ -93,12 +103,14 @@ const ProfileMain: React.FC<{ id: string }> = ({ id }) => {
               </DropDownWrap>
             )}
           </ButtonNav>
-          <ButtonNav
-            active={currentWindow === SESSION}
-            onClick={() => setCurrentWindow(SESSION)}
-          >
-            Session Reports
-          </ButtonNav>
+          {current_profile.id === id && (
+            <ButtonNav
+              active={currentWindow === SESSION}
+              onClick={() => setCurrentWindow(SESSION)}
+            >
+              Session Reports
+            </ButtonNav>
+          )}
           <ButtonNav
             active={currentWindow === COMPARISON}
             onClick={() => setCurrentWindow(COMPARISON)}
