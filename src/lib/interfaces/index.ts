@@ -17,3 +17,6 @@ export type { ProfilesData } from "./profiles-data";
 export type { ProfilesResponseData } from "./profiles-response-data";
 export type { ProfilesFilters } from './profiles-filters';
 export type { SubscribeResponse } from './subscribe-response';
+export type { LeaderBattingFilters } from './leaderboard-batting-filters';
+export type { LeaderBattingData } from './leaderboard-batting-data';
+export type { LeaderBattingResponse } from './leaderboard-batting-response';
