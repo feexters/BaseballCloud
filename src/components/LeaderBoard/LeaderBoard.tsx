@@ -1,9 +1,9 @@
-import { LeaderBattingFilters } from "lib/interfaces";
+import { LeaderFilters } from "lib/interfaces";
 import { toKeyType } from "lib/utils";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { DropDown, Search } from "ui";
-import { Batting } from "./components";
+import { Batting, Pitching } from "./components";
 
 const positions = [
   "All",
@@ -31,7 +31,7 @@ const Network = () => {
   const [selectType, setSelectType] = useState(battingTypes[0]);
   const [dateSearch, setDateSearch] = useState(dateList[0]);
 
-  const filters: LeaderBattingFilters = {
+  const filters: LeaderFilters = {
     input: {
       school: schoolSearch,
       team: teamSearch,
@@ -149,7 +149,11 @@ const Network = () => {
           </SettingsItem>
         </Settings>
       </Menu>
-      <Batting filters={filters} />
+      {currentWindow === leaderBoardRoutes[0] ? (
+        <Batting filters={filters} />
+      ) : (
+        <Pitching filters={filters} />
+      )}
     </Wrap>
   );
 };

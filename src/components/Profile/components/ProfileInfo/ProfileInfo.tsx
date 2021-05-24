@@ -28,8 +28,6 @@ const ProfileInfo: React.FC<{ onToggle(): void; id: string }> = ({
     query: CURRENT_PROFILE,
   }) || { current_profile: {} as UserData };
 
-  console.log(data)
-
   return (
     <Wrap>
       <TopInfo>

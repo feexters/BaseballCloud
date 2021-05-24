@@ -1,4 +1,4 @@
-export interface LeaderBattingFilters {
+export interface LeaderFilters {
   input: {
     age?: number | null;
     date?: string;

@@ -145,6 +145,7 @@ const DropDown = styled.div`
   background-color: white;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   padding: 10px 0;
   border-radius: 5px;
   z-index: 5;
@@ -183,6 +184,7 @@ const ButtonNav = styled.div<{ active: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   padding: 8px;
   margin: 8px;
   border: 2px solid #788b99;

@@ -1,12 +1,12 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { LEADER_BATTING } from "apollo";
+import { LEADER_PITCHING } from "apollo";
 import { UPDATE_FAVORITE } from "apollo/mutations";
 import {
-  LeaderBattingData,
   LeaderFilters,
-  LeaderBattingResponse,
   SubscribeData,
   SubscribeResponse,
+  LeaderPitchingResponse,
+  LeaderPitchingData,
 } from "lib/interfaces";
 import { getId } from "lib/utils";
 import React from "react";
@@ -28,9 +28,9 @@ interface TableData {
     age: number;
     school: string;
     teams: string;
-    exit_velocity: number;
-    launch_angle: number;
-    distance: number;
+    pitch_type: string;
+    velocity: number;
+    spin_rate: number;
     favorite: JSX.Element;
   };
 }
@@ -42,7 +42,7 @@ const tableHeaders: { key: keyof TableData["values"]; title: string }[] = [
   },
   {
     key: "name",
-    title: "Batter Name",
+    title: "Pitcher Name",
   },
   {
     key: "age",
@@ -57,16 +57,16 @@ const tableHeaders: { key: keyof TableData["values"]; title: string }[] = [
     title: "Teams",
   },
   {
-    key: "exit_velocity",
-    title: "Exit Velocity",
+    key: "pitch_type",
+    title: "Pitch Type",
   },
   {
-    key: "launch_angle",
-    title: "Launch Angle",
+    key: "velocity",
+    title: "Velocity",
   },
   {
-    key: "distance",
-    title: "Distance",
+    key: "spin_rate",
+    title: "Spin Rate",
   },
   {
     key: "favorite",
@@ -74,7 +74,7 @@ const tableHeaders: { key: keyof TableData["values"]; title: string }[] = [
   },
 ];
 
-const Batting: React.FC<BattingProps> = ({ filters }) => {
+const Pitching: React.FC<BattingProps> = ({ filters }) => {
   const history = useHistory();
 
   const [submitFavorite] =
@@ -84,7 +84,7 @@ const Batting: React.FC<BattingProps> = ({ filters }) => {
     loading: loadingProfiles,
     data,
     refetch,
-  } = useQuery<LeaderBattingResponse, LeaderFilters>(LEADER_BATTING, {
+  } = useQuery<LeaderPitchingResponse, LeaderFilters>(LEADER_PITCHING, {
     variables: filters,
   });
 
@@ -110,8 +110,8 @@ const Batting: React.FC<BattingProps> = ({ filters }) => {
 
   const tabValues: TableData[] = (
     data
-      ? data.leaderboard_batting.leaderboard_batting
-      : ([] as LeaderBattingData[])
+      ? data.leaderboard_pitching.leaderboard_pitching
+      : ([] as LeaderPitchingData[])
   ).map((obj, index) => {
     return {
       id: getId(),
@@ -119,20 +119,20 @@ const Batting: React.FC<BattingProps> = ({ filters }) => {
         rank: index + 1,
         name: (
           <LinkWrap>
-            <ProfileLink onClick={() => onNavigate(obj.batter_datraks_id)}>
-              {obj.batter_name}
+            <ProfileLink onClick={() => onNavigate(obj.pitcher_datraks_id)}>
+              {obj.pitcher_name}
             </ProfileLink>
           </LinkWrap>
         ),
         age: obj.age,
         school: obj.school?.name || "-",
         teams: obj.teams.map((item) => item.name).join(", "),
-        exit_velocity: obj.exit_velocity,
-        launch_angle: obj.launch_angle,
-        distance: obj.distance,
+        velocity: obj.velocity,
+        spin_rate: obj.spin_rate,
+        pitch_type: obj.pitch_type,
         favorite: (
           <FavoriteIcon
-            onClick={() => onSubscribe(obj.batter_datraks_id, obj.favorite)}
+            onClick={() => onSubscribe(obj.pitcher_datraks_id, obj.favorite)}
             className={`${obj.favorite ? "fas" : "far"} fa-heart`}
           />
         ),
@@ -199,4 +199,4 @@ const FavoriteIcon = styled.i`
   cursor: pointer;
 `;
 
-export default Batting;
+export default Pitching;
