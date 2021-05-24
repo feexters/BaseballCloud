@@ -11,22 +11,17 @@ import {
 } from "./components";
 import { MainLoader } from "ui";
 import { useParams } from "react-router";
-import { SubscribeData, UserData } from "lib/interfaces";
+import { SubscribeData, SubscribeResponse, UserData } from "lib/interfaces";
 import { UPDATE_FAVORITE } from "apollo/mutations";
 import { toastr } from "react-redux-toastr";
 import { toastrSubscribeOption } from "ui/Toastr/Toastr";
-
-interface SubscribeResponse {
-  update_favorite_profile: {
-    favorite: boolean; 
-  }
-}
 
 const Profile: React.FC<{ currentId: string }> = ({ currentId }) => {
   const profileRoute = useParams() as { id: string };
   const id = profileRoute.id ? profileRoute.id : currentId;
 
-  const [submitFavorite] = useMutation<SubscribeResponse, SubscribeData>(UPDATE_FAVORITE);
+  const [submitFavorite] =
+    useMutation<SubscribeResponse, SubscribeData>(UPDATE_FAVORITE);
 
   const { loading: loadingProfile, data } = useQuery(PROFILE, {
     variables: { id: id },
@@ -51,21 +46,16 @@ const Profile: React.FC<{ currentId: string }> = ({ currentId }) => {
 
   const onToggle = async () => {
     if (current_profile.id === data.profile.id) {
-      setIsChangeForm(true)
+      setIsChangeForm(true);
     } else {
       await submitFavorite({
-        variables: {form: {
-          profile_id: id,
-          favorite: !data.profile.favorite,
-        }},
+        variables: {
+          form: {
+            profile_id: id,
+            favorite: !data.profile.favorite,
+          },
+        },
         update: (cache, { data: update }) => {
-          // const { profile } = cache.readQuery<{ profile: UserData }>({
-          //   query: PROFILE,
-          //   variables: { id: currentId },
-          // }) || { profile: {} as UserData };
-          console.log(update?.update_favorite_profile)
-          console.log(data)
-  
           cache.writeQuery({
             query: PROFILE,
             variables: { id: data.profile.id },
@@ -74,11 +64,11 @@ const Profile: React.FC<{ currentId: string }> = ({ currentId }) => {
             },
           });
         },
-      })
+      });
 
       toastr.success("", "", toastrSubscribeOption(!data.profile.favorite));
     }
-  }
+  };
 
   return (
     <Wrap>

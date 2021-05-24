@@ -7,3 +7,4 @@ export { BATTING_SUMMARY } from './batting-summary';
 export { PROFILE_EVENTS } from './profile-events';
 export { BATTING_LOG } from './batting-log';
 export { BATTING_GRAPH } from './batting-graph';
+export { PROFILES } from './profiles';

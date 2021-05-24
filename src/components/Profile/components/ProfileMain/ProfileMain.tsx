@@ -180,16 +180,19 @@ const ButtonList = styled.div`
 `;
 
 const ButtonNav = styled.div<{ active: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 8px;
   margin: 8px;
-  position: relative;
   border: 2px solid #788b99;
   border-radius: 40px;
+  background-color: ${({ active }) => (active ? "#788b99" : "white")};
+  color: ${({ active }) => (active ? "white" : "#667784")};
   font-size: 14px;
   line-height: 17px;
   font-weight: 700;
-  background-color: ${({ active }) => (active ? "#788b99" : "white")};
-  color: ${({ active }) => (active ? "white" : "#667784")};
+  text-align: center;
   cursor: pointer;
 
   &:hover {

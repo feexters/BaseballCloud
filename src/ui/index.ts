@@ -10,3 +10,4 @@ export { Pagination } from './Pagination';
 export { DateSelect } from './DateSelect';
 export { DropDownPanel } from './DropDownPanel';
 export { MainLoader } from './MainLoader';
+export { Search } from './Search';

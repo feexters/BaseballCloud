@@ -116,6 +116,10 @@ const ProfileMenu = styled.div`
 
 const NavigationList = styled.div`
   display: flex;
+
+  @media (max-width: ${maxWidth}) {
+    margin-bottom: 20px;
+  }
 `;
 
 const ProfileWrap = styled.div`

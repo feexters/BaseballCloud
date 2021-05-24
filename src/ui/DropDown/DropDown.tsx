@@ -5,11 +5,22 @@ import styled from "styled-components";
 interface DropDownProps {
   items: string[];
   onSelect(value: string): void;
+  width?: string;
+  height?: string;
+  isArrow?: boolean;
 }
 
-const DropDown: React.FC<DropDownProps> = ({ items, onSelect, children }) => {
+const DropDown: React.FC<DropDownProps> = ({
+  items,
+  onSelect,
+  children,
+  width = "",
+  height = "",
+  isArrow = true,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropDownRef = useRef<HTMLDivElement>(null);
+  const [hoverItem, setHoverItem] = useState(0);
 
   const onClose = () => {
     setIsOpen(false);
@@ -24,31 +35,55 @@ const DropDown: React.FC<DropDownProps> = ({ items, onSelect, children }) => {
     onClose();
   };
 
+  const onKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.code === "Enter" && items[hoverItem]) {
+      onSelect(items[hoverItem]);
+    } else if (event.code === "ArrowUp") {
+      setHoverItem(hoverItem - 1 < 0 ? items.length - 1 : hoverItem - 1);
+      event.preventDefault();
+    } else if (event.code === "ArrowDown") {
+      setHoverItem(hoverItem + 1 > items.length - 1 ? 0 : hoverItem + 1);
+      event.preventDefault();
+    }
+  };
+
   return (
     <Wrap ref={dropDownRef}>
-      <DropDownToggle onFocus={onOpen} onBlur={onClose} tabIndex={0}>
+      <DropDownToggle
+        onFocus={onOpen}
+        onKeyDown={onKeyPress}
+        onBlur={onClose}
+        tabIndex={0}
+      >
         {children}
         <Icon isOpen={isOpen}>
           <DropDownIcon />
         </Icon>
         {isOpen && (
-        <DropDownWrap>
-          <DropDownPanel>
-            {items.map((item) => (
-              <Select key={item} onMouseDown={() => onClick(item)}>
-                {item}
-              </Select>
-            ))}
-          </DropDownPanel>
-        </DropDownWrap>
-      )}
+          <DropDownWrap width={width} height={height}>
+            <DropDownPanel isArrow={isArrow}>
+              <SelectWrap>
+              {items.map((item) => (
+                <Select
+                  key={item}
+                  onMouseDown={() => onClick(item)}
+                  isActive={item === items[hoverItem]}
+                >
+                  {item}
+                </Select>
+              ))}
+              </SelectWrap>
+            </DropDownPanel>
+          </DropDownWrap>
+        )}
       </DropDownToggle>
     </Wrap>
   );
 };
 
-const DropDownPanel = styled.div`
+const DropDownPanel = styled.div<{ isArrow: boolean }>`
   width: 100%;
+  height: 100%;
   position: relative;
   top: 10px;
   box-shadow: 0 3px 8px 0 rgb(0 0 0 / 15%);
@@ -60,6 +95,9 @@ const DropDownPanel = styled.div`
   border-radius: 5px;
   z-index: 5;
 
+  ${({ isArrow }) =>
+    isArrow &&
+    `
   &:before,
   &:after {
     content: "";
@@ -79,6 +117,7 @@ const DropDownPanel = styled.div`
     border-color: transparent transparent #ebebeb transparent;
     z-index: -1;
   }
+  `}
 `;
 
 const Wrap = styled.div`
@@ -86,6 +125,12 @@ const Wrap = styled.div`
   align-items: center;
   position: relative;
 `;
+
+const SelectWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+`
 
 const DropDownToggle = styled.div`
   padding: 0;
@@ -97,28 +142,36 @@ const DropDownToggle = styled.div`
   align-items: center;
   position: relative;
   cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 const Icon = styled.div<{ isOpen: boolean }>`
   margin-left: 5px;
   transform: rotate(${({ isOpen }) => (isOpen ? "180deg" : "0deg")});
-  margin-top: ${({ isOpen }) => (isOpen ? "0" : "3px")};
+  /* margin-top: ${({ isOpen }) => (isOpen ? "0" : "3px")}; */
 `;
 
-const DropDownWrap = styled.div`
-  width: 178px;
+const DropDownWrap = styled.div<{ width: string; height: string }>`
+  width: ${({ width }) => (width ? width : "178px")};
+  ${({ height }) =>
+    height && `height: ${height};`}
   position: absolute;
   top: 100%;
   right: -25px;
 `;
 
-const Select = styled.div`
+const Select = styled.div<{ isActive: boolean }>`
   padding: 8px 16px;
-  background: #fff;
+  background-color: ${({ isActive }) =>
+    isActive ? "rgba(72, 187, 255, 0.1)" : "#fff"};
   line-height: 1;
   color: #788b99;
   font-size: 16px;
   font-weight: 400;
+  white-space: normal;
   cursor: pointer;
 
   &:hover {
