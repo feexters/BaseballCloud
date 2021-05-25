@@ -11,7 +11,10 @@ export const auth = createSlice({
   name: "auth",
   initialState: {
     authorized: false,
-    role: '',
+    auth_info: {
+      role: "",
+      email: "",
+    },
     headers: {} as Headers,
     submit: {} as Submit,
     isValid: false,
@@ -20,19 +23,27 @@ export const auth = createSlice({
   reducers: {
     authorized(
       state,
-      action: PayloadAction<{ status: boolean; headers: Headers, role: string }>
+      action: PayloadAction<{
+        status: boolean;
+        headers: Headers;
+        role: string;
+        email: string;
+      }>
     ) {
-      const { status, headers, role } = action.payload;
+      const { status, headers, role, email } = action.payload;
       state.authorized = status;
       Auth.setHeaders(headers);
       state.headers = headers;
-      state.role = role;
+      state.auth_info = {
+        role: role,
+        email: email,
+      };
     },
     logout(state) {
       state.headers = {} as Headers;
       Auth.deleteHeaders();
       state.authorized = false;
-      state.isValid = false
+      state.isValid = false;
     },
     setIsValidate(state, action: PayloadAction<boolean>) {
       state.isValid = action.payload;

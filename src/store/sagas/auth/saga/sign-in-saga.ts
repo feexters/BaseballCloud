@@ -15,7 +15,10 @@ export interface SingInWorker {
 
 interface ResponseData {
   data: {
-    role: string;
+    data: {
+      role: string;
+      email: string;
+    };
   };
   headers: Headers;
 }
@@ -32,7 +35,8 @@ function* signInWorker({
         authorized({
           status: true,
           headers: response.headers,
-          role: response.data.role,
+          role: response.data.data.role,
+          email: response.data.data.role,
         })
       );
       yield put(finishAuthSubmitting(""));

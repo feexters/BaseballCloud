@@ -8,7 +8,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import { LoginRoutes } from "./routes";
 
 const Router = () => {
-  const { isValid } = useAppSelector((state) => state.auth);
+  const { isValid, auth_info } = useAppSelector((state) => state.auth);
 
   const { current_profile } = client.readQuery({
     query: CURRENT_PROFILE,
@@ -24,10 +24,18 @@ const Router = () => {
         )}
       </Route>
       <Route path={Routes.PROFILE_ID}>
-        {!isValid ? <Redirect to={Routes.LOGIN} /> : <Profile currentId={current_profile.id} />}
+        {!isValid ? (
+          <Redirect to={Routes.LOGIN} />
+        ) : (
+          <Profile currentId={current_profile.id} />
+        )}
       </Route>
       <Route path={Routes.PROFILE}>
-        {!isValid ? <Redirect to={Routes.LOGIN} /> : <Profile currentId={current_profile.id} />}
+        {!isValid ? (
+          <Redirect to={Routes.LOGIN} />
+        ) : (
+          <Profile currentId={current_profile.id} />
+        )}
       </Route>
       <Route path={Routes.NETWORK}>
         {!isValid ? <Redirect to={Routes.NETWORK} /> : <Network />}

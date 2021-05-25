@@ -1,8 +1,12 @@
-import {put, takeEvery, call, StrictEffect} from 'redux-saga/effects';
-import {AUTH_SIGN_UP} from '../actions/actions';
-import {SignUpData, Headers} from 'lib/interfaces';
-import {fetchSignUp} from '../axios';
-import { authorized, finishAuthSubmitting, startAuthSubmitting } from 'store/slices';
+import { put, takeEvery, call, StrictEffect } from "redux-saga/effects";
+import { AUTH_SIGN_UP } from "../actions/actions";
+import { SignUpData, Headers } from "lib/interfaces";
+import { fetchSignUp } from "../axios";
+import {
+  authorized,
+  finishAuthSubmitting,
+  startAuthSubmitting,
+} from "store/slices";
 
 export interface SingUpWorker {
   type: string;
@@ -13,7 +17,10 @@ interface Response {
   headers: Headers;
   status: number;
   data: {
-    role: string
+    data: {
+      role: string;
+      email: string;
+    };
   };
 }
 
@@ -22,18 +29,24 @@ function* signUpWorker({
 }: SingUpWorker): Generator<StrictEffect, void, Response> {
   try {
     yield put(startAuthSubmitting());
-    
+
     const response = yield call(() => fetchSignUp(payload));
 
     if (response.status === 422) {
-      yield put(finishAuthSubmitting('Email has already been taken'));
-    } else if (response.status === 200 ) {
-      yield put(authorized({ status: true, headers: response.headers, role: response.data.role}));
-      yield put(finishAuthSubmitting(''));
+      yield put(finishAuthSubmitting("Email has already been taken"));
+    } else if (response.status === 200) {
+      yield put(
+        authorized({
+          status: true,
+          headers: response.headers,
+          role: response.data.data.role,
+          email: response.data.data.role,
+        })
+      );
+      yield put(finishAuthSubmitting(""));
     } else {
-      yield put(finishAuthSubmitting(''));
+      yield put(finishAuthSubmitting(""));
     }
-    
   } catch (e) {
     console.error(e);
   }
