@@ -45,7 +45,7 @@ const Profile: React.FC<{ currentId: string }> = ({ currentId }) => {
   }
 
   const onToggle = async () => {
-    if (current_profile.id === data.profile.id) {
+    if (current_profile?.id === data.profile.id) {
       setIsChangeForm(true);
     } else {
       await submitFavorite({

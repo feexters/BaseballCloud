@@ -22,3 +22,7 @@ export type { LeaderBattingData } from './leaderboard-batting-data';
 export type { LeaderBattingResponse } from './leaderboard-batting-response';
 export type { LeaderPitchingData } from './leaderboard-pitching-data';
 export type { LeaderPitchingResponse } from './leaderboard-pitching-response';
+export type { FavoriteProfilesData } from './favorite-profiles-data';
+export type { FavoriteProfilesResponse } from './favorite-profiles-response';
+export type { AvatarData } from './avatar-data';
+export type { FavoriteProfilesFilters } from './favorite-profiles-filters';

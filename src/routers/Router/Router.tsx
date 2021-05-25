@@ -1,5 +1,5 @@
 import { client, CURRENT_PROFILE } from "apollo";
-import { LeaderBoard, Network } from "components";
+import { LeaderBoard, Network, Scout } from "components";
 import { Profile } from "components/Profile";
 import { Routes } from "lib/const/routes";
 import { useAppSelector } from "lib/hooks";
@@ -27,21 +27,23 @@ const Router = () => {
         {!isValid ? (
           <Redirect to={Routes.LOGIN} />
         ) : (
-          <Profile currentId={current_profile.id} />
+          <Profile currentId={current_profile?.id || ''} />
         )}
       </Route>
       <Route path={Routes.PROFILE}>
         {!isValid ? (
           <Redirect to={Routes.LOGIN} />
+        ) : auth_info.role === "player" ? (
+          <Profile currentId={current_profile?.id || ''} />
         ) : (
-          <Profile currentId={current_profile.id} />
+          <Scout />
         )}
       </Route>
       <Route path={Routes.NETWORK}>
-        {!isValid ? <Redirect to={Routes.NETWORK} /> : <Network />}
+        {!isValid ? <Redirect to={Routes.LOGIN} /> : <Network />}
       </Route>
       <Route path={Routes.LEADERBOARD}>
-        {!isValid ? <Redirect to={Routes.LEADERBOARD} /> : <LeaderBoard />}
+        {!isValid ? <Redirect to={Routes.LOGIN} /> : <LeaderBoard />}
       </Route>
 
       <LoginRoutes />

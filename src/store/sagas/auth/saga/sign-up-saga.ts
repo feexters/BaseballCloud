@@ -40,7 +40,7 @@ function* signUpWorker({
           status: true,
           headers: response.headers,
           role: response.data.data.role,
-          email: response.data.data.role,
+          email: response.data.data.email,
         })
       );
       yield put(finishAuthSubmitting(""));

@@ -42,7 +42,7 @@ const ProfileInfo: React.FC<{ onToggle(): void; id: string }> = ({
           </Position>
         )}
         <Change onClick={onToggle}>
-          {current_profile.id === data.id ? (
+          {current_profile?.id === data.id ? (
             <EditIcon />
           ) : data.favorite ? (
             <UnsubscribeIcon />

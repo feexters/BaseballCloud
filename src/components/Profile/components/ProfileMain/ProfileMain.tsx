@@ -70,7 +70,7 @@ const ProfileMain: React.FC<{ id: string }> = ({ id }) => {
         </ProgressWrap>
       </Wrap>
 
-      {current_profile.id === id && (
+      {current_profile?.id === id && (
         <Wrap>
           <Title>Recent Session Reports</Title>
           <Text>No data currently linked to this profile</Text>
@@ -103,7 +103,7 @@ const ProfileMain: React.FC<{ id: string }> = ({ id }) => {
               </DropDownWrap>
             )}
           </ButtonNav>
-          {current_profile.id === id && (
+          {current_profile?.id === id && (
             <ButtonNav
               active={currentWindow === SESSION}
               onClick={() => setCurrentWindow(SESSION)}

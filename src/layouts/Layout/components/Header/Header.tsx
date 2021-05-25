@@ -17,10 +17,9 @@ const selectMenu = [
 const Header: React.FC<{ isLoading: boolean }> = ({ isLoading }) => {
   const history = useHistory();
   const location = useLocation();
-  const {
-    auth: { isValid },
-  } = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
+
+  const { isValid, auth_info } = useAppSelector((state) => state.auth);
 
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
@@ -60,15 +59,28 @@ const Header: React.FC<{ isLoading: boolean }> = ({ isLoading }) => {
             </NavigationItem>
           </NavigationList>
           <ProfileWrap>
-            <PlayerAvatar image={current_profile.avatar}></PlayerAvatar>
-            <ProfileMenu onClick={() => setIsDropDownOpen(!isDropDownOpen)}>
-              {current_profile.first_name && current_profile.last_name
-                ? `${current_profile.first_name} ${current_profile.last_name}`
-                : "Profile Name"}
-              <IconWrap>
-                <TriangleIcon />
-              </IconWrap>
-            </ProfileMenu>
+            {auth_info.role === "player" ? (
+              <>
+                <PlayerAvatar image={current_profile?.avatar}></PlayerAvatar>
+                <ProfileMenu onClick={() => setIsDropDownOpen(!isDropDownOpen)}>
+                  {current_profile?.first_name && current_profile?.last_name
+                    ? `${current_profile?.first_name} ${current_profile?.last_name}`
+                    : "Profile Name"}
+                  <IconWrap>
+                    <TriangleIcon />
+                  </IconWrap>
+                </ProfileMenu>
+              </>
+            ) : (
+              <>
+                <ProfileMenu onClick={() => setIsDropDownOpen(!isDropDownOpen)}>
+                  {auth_info.email}
+                  <IconWrap>
+                    <TriangleIcon />
+                  </IconWrap>
+                </ProfileMenu>
+              </>
+            )}
             <DropDownPanel
               items={selectMenu}
               isOpen={isDropDownOpen}
