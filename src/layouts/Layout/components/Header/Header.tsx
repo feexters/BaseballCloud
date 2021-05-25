@@ -20,7 +20,7 @@ const Header: React.FC<{ isLoading: boolean }> = ({ isLoading }) => {
   const {
     auth: { isValid },
   } = useAppSelector((state) => state);
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
@@ -32,7 +32,7 @@ const Header: React.FC<{ isLoading: boolean }> = ({ isLoading }) => {
     if (id === selectMenu[0].id) {
       history.push(Routes.PROFILE);
     } else {
-      dispatch(authSingOut())
+      dispatch(authSingOut());
     }
 
     setIsDropDownOpen(false);
@@ -40,7 +40,9 @@ const Header: React.FC<{ isLoading: boolean }> = ({ isLoading }) => {
 
   return (
     <HeaderWrap>
-      <LogoIcon />
+      <LogoWrap onClick={() => history.push(Routes.MAIN)}>
+        <LogoIcon />
+      </LogoWrap>
       {isValid && !isLoading && (
         <NavigationWrap>
           <NavigationList>
@@ -97,6 +99,10 @@ const HeaderWrap = styled.header`
   @media (max-width: 400px) {
     flex-direction: column;
   }
+`;
+
+const LogoWrap = styled.div`
+  cursor: pointer;
 `;
 
 const ProfileMenu = styled.div`
