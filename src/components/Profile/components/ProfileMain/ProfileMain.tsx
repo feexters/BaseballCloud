@@ -159,12 +159,14 @@ const DropDownWrap = styled.div`
 `;
 
 const Select = styled.div`
+  width: 100%;
   padding: 8px 16px;
   background: #fff;
   line-height: 1;
   color: #788b99;
   font-size: 16px;
   font-weight: 400;
+  text-align: left;
   cursor: pointer;
 
   &:hover {
