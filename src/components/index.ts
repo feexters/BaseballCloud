@@ -5,3 +5,4 @@ export { ForgotPassword } from "./ForgotPassword";
 export { Network } from "./Network";
 export { LeaderBoard } from './LeaderBoard';
 export { Scout } from './Scout';
+export { Events } from './Events';

@@ -1,24 +1,51 @@
-import { client, CURRENT_PROFILE } from "apollo";
+import { client, FAVORITE_PROFILES } from "apollo";
+import { Events } from "components/Events";
+import {
+  AvatarData,
+  EventNormalizeData,
+  FavoriteProfilesFilters,
+  FavoriteProfilesResponse,
+} from "lib/interfaces";
+import { favoriteListSchema } from "lib/normalizr";
+import { normalize } from "normalizr";
 import styled from "styled-components";
 import { Comparison } from "./components";
-import { UserData } from "lib/interfaces";
 
-const ScoutMain: React.FC<{ id: string }> = ({ id }) => {
-  const { current_profile } = client.readQuery<{ current_profile: UserData }>({
-    query: CURRENT_PROFILE,
-  }) || { current_profile: {} as UserData };
+const ScoutMain = () => {
+  const favoriteProfiles = client.readQuery<
+    FavoriteProfilesResponse,
+    FavoriteProfilesFilters
+  >({
+    query: FAVORITE_PROFILES,
+    variables: {
+      input: {
+        offset: 0,
+        profiles_count: 50,
+      },
+    },
+  });
+
+  const favorite = normalize(
+    favoriteProfiles?.my_favorite.profiles || {},
+    favoriteListSchema
+  );
+
+  const events: { [key: string]: EventNormalizeData } =
+    favorite.entities.events || ({} as { [key: string]: EventNormalizeData });
+
+  const avatars: { [key: string]: AvatarData } =
+    favorite.entities.avatars || ({} as { [key: string]: AvatarData });
 
   return (
     <>
-      {current_profile?.id === id && (
-        <Wrap>
-          <Title>Recent Session Reports</Title>
-          <Text>No data currently linked to this profile</Text>
-        </Wrap>
-      )}
+      <Wrap>
+        <Title>Recent Session Reports</Title>
+        <Events events={Object.values(events)} avatars={avatars} />
+      </Wrap>
 
       <Wrap>
-        <Comparison id={id} />
+        <Title>Comparison</Title>
+        <Comparison />
       </Wrap>
     </>
   );
@@ -39,12 +66,6 @@ const Title = styled.h1`
   line-height: 1.25;
   font-weight: 900;
   color: #414f5a;
-`;
-
-const Text = styled.p`
-  display: block;
-  color: #667784;
-  font-size: 16px;
 `;
 
 export default ScoutMain;

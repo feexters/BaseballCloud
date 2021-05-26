@@ -9,6 +9,7 @@ interface DropDownPanelData {
   active?: string;
   onSelect(id: string): void;
   isOpen: boolean;
+  isArrow?: boolean;
 }
 
 const DropDownPanel: React.FC<DropDownPanelData> = ({
@@ -16,15 +17,16 @@ const DropDownPanel: React.FC<DropDownPanelData> = ({
   active = "",
   onSelect,
   isOpen,
+  isArrow = true,
 }) => {
   return (
     <DropDownWrap isOpen={isOpen && items.length !== 0}>
-      <DropDownPanelWrap>
+      <DropDownPanelWrap isArrow={isArrow}>
         {items.map((item) => (
           <Select
             key={item.id}
             isActive={active === item.id}
-            onClick={() => onSelect(item.id)}
+            onMouseDown={() => onSelect(item.id)}
           >
             {item.value}
           </Select>
@@ -34,7 +36,7 @@ const DropDownPanel: React.FC<DropDownPanelData> = ({
   );
 };
 
-const DropDownPanelWrap = styled.div`
+const DropDownPanelWrap = styled.div<{ isArrow: boolean }>`
   width: 100%;
   position: relative;
   top: 10px;
@@ -47,6 +49,9 @@ const DropDownPanelWrap = styled.div`
   border-radius: 5px;
   z-index: 5;
 
+  ${({ isArrow }) =>
+    isArrow &&
+    `
   &:before,
   &:after {
     content: "";
@@ -66,6 +71,7 @@ const DropDownPanelWrap = styled.div`
     border-color: transparent transparent #ebebeb transparent;
     z-index: -1;
   }
+  `}
 `;
 
 const DropDownWrap = styled.div<{ isOpen: boolean }>`

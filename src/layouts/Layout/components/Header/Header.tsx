@@ -73,7 +73,11 @@ const Header: React.FC<{ isLoading: boolean }> = ({ isLoading }) => {
               </>
             ) : (
               <>
-                <ProfileMenu onClick={() => setIsDropDownOpen(!isDropDownOpen)}>
+                <ProfileMenu
+                  tabIndex={0}
+                  onClick={() => setIsDropDownOpen(!isDropDownOpen)}
+                  onBlur={() => setIsDropDownOpen(false)}
+                >
                   {auth_info.email}
                   <IconWrap>
                     <TriangleIcon />

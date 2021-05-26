@@ -10,17 +10,29 @@ import {
   BATTING_SUMMARY as BATTING_QUERY,
   client,
   CURRENT_PROFILE,
+  PROFILE,
 } from "apollo";
 import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 import { Batting, Comparison, SessionReports } from "./components";
 import { ProgressLine } from "./components";
-import { BattingSummaryData, UserData } from "lib/interfaces";
+import {
+  AvatarData,
+  BattingSummaryData,
+  EventNormalizeData,
+  UserData,
+} from "lib/interfaces";
+import { useAppSelector } from "lib/hooks";
+import { normalize } from "normalizr";
+import { eventsListSchema } from "lib/normalizr";
+import { Events } from "components/Events";
 
 const ProfileMain: React.FC<{ id: string }> = ({ id }) => {
   const [currentWindow, setCurrentWindow] = useState(BATTING);
   const [battingWindow, setBattingWindow] = useState(BATTING_SUMMARY);
   const [isOpenDropDown, setIsOpenDropDown] = useState(false);
+
+  const { role } = useAppSelector((state) => state.auth.auth_info);
 
   const {
     batting_summary: { top_values },
@@ -31,6 +43,23 @@ const ProfileMain: React.FC<{ id: string }> = ({ id }) => {
   const { current_profile } = client.readQuery<{ current_profile: UserData }>({
     query: CURRENT_PROFILE,
   }) || { current_profile: {} as UserData };
+
+  const { profile } = client.readQuery<{ profile: UserData }>({
+    query: PROFILE,
+    variables: { id },
+  }) || { profile: {} as UserData };
+
+  const eventsNormalize = normalize(
+    profile.recent_events || {},
+    eventsListSchema
+  );
+
+  const events: { [key: string]: EventNormalizeData } =
+    eventsNormalize.entities.events ||
+    ({} as { [key: string]: EventNormalizeData });
+
+  const avatars: { [key: string]: AvatarData } =
+    eventsNormalize.entities.avatars || ({} as { [key: string]: AvatarData });
 
   const onSelect = (value: string) => {
     setIsOpenDropDown(false);
@@ -47,8 +76,35 @@ const ProfileMain: React.FC<{ id: string }> = ({ id }) => {
     }
   }, [currentWindow, battingWindow, id]);
 
+  const { pitcher_summary } = profile;
+
   return (
     <>
+      {role === "scout" && (
+        <Wrap>
+          <Title>Top Pitching Values</Title>
+          <ProgressWrap>
+            <ProgressLine
+              name="Fastball Velocity"
+              value={pitcher_summary.length ? pitcher_summary[0].velocity : 0}
+              maxValue={150}
+            />
+            <ProgressLine
+              name="Spin Rate"
+              value={pitcher_summary.length ? pitcher_summary[0].spin_rate : 0}
+              maxValue={5000}
+            />
+            <ProgressLine
+              name="Pitch Movement"
+              value={
+                pitcher_summary.length ? pitcher_summary[0].horizontal_break : 0
+              }
+              maxValue={50}
+            />
+          </ProgressWrap>
+        </Wrap>
+      )}
+
       <Wrap>
         <Title>Top Batting Values</Title>
         <ProgressWrap>
@@ -70,10 +126,10 @@ const ProfileMain: React.FC<{ id: string }> = ({ id }) => {
         </ProgressWrap>
       </Wrap>
 
-      {current_profile?.id === id && (
+      {(current_profile?.id === id || role === "scout") && (
         <Wrap>
           <Title>Recent Session Reports</Title>
-          <Text>No data currently linked to this profile</Text>
+          <Events events={Object.values(events)} avatars={avatars} isProfile />
         </Wrap>
       )}
 
@@ -210,12 +266,6 @@ const Title = styled.h1`
   line-height: 1.25;
   font-weight: 900;
   color: #414f5a;
-`;
-
-const Text = styled.p`
-  display: block;
-  color: #667784;
-  font-size: 16px;
 `;
 
 const ProgressWrap = styled.div`

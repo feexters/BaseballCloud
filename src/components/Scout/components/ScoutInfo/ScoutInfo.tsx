@@ -3,6 +3,7 @@ import {
   FavoriteProfilesFilters,
   FavoriteProfilesResponse,
 } from "lib/interfaces";
+import { useHistory } from "react-router";
 import styled from "styled-components";
 
 const ScoutInfo = () => {
@@ -19,11 +20,15 @@ const ScoutInfo = () => {
     },
   });
 
+  const history = useHistory();
+
   return (
     <Wrap>
       {data?.my_favorite.profiles.map((profile) => (
-        <Player key={profile.id}>
-          <PlayerLink title={`See ${profile.first_name} ${profile.last_name} profile details`}>
+        <Player key={profile.id} onClick={() => history.push(`profile/${profile.id}`)}>
+          <PlayerLink
+            title={`See ${profile.first_name} ${profile.last_name} profile details`}
+          >
             {profile.first_name + " " + profile.last_name}
           </PlayerLink>
         </Player>

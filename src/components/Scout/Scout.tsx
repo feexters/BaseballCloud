@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ScoutInfo } from "./components";
+import { ScoutInfo, ScoutMain } from "./components";
 import { useQuery } from "@apollo/client";
 import { FAVORITE_PROFILES } from "apollo";
 import {
@@ -28,7 +28,9 @@ const Scout = () => {
   return (
     <Wrap>
       <ScoutInfo />
-      <Main />
+      <Main>
+        <ScoutMain />
+      </Main>
     </Wrap>
   );
 };

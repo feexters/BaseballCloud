@@ -26,3 +26,5 @@ export type { FavoriteProfilesData } from './favorite-profiles-data';
 export type { FavoriteProfilesResponse } from './favorite-profiles-response';
 export type { AvatarData } from './avatar-data';
 export type { FavoriteProfilesFilters } from './favorite-profiles-filters';
+export type { EventNormalizeData } from './event-normalize-data';
+export type { PitcherData } from './pitcher-data';
