@@ -4,11 +4,11 @@ import { Profile } from "components/Profile";
 import { Routes } from "lib/const/routes";
 import { useAppSelector } from "lib/hooks";
 import React from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
-import { LoginRoutes } from "./routes";
+import { Switch } from "react-router-dom";
+import { LoginRoutes, PrivateRoute } from "./routes";
 
 const Router = () => {
-  const { isValid, auth_info } = useAppSelector((state) => state.auth);
+  const { auth_info } = useAppSelector((state) => state.auth);
 
   const { current_profile } = client.readQuery({
     query: CURRENT_PROFILE,
@@ -16,35 +16,27 @@ const Router = () => {
 
   return (
     <Switch>
-      <Route exact path={Routes.MAIN}>
-        {!isValid ? (
-          <Redirect to={Routes.LOGIN} />
-        ) : (
-          <Redirect to={Routes.PROFILE} />
-        )}
-      </Route>
-      <Route path={Routes.PROFILE_ID}>
-        {!isValid ? (
-          <Redirect to={Routes.LOGIN} />
-        ) : (
-          <Profile currentId={current_profile?.id || ''} />
-        )}
-      </Route>
-      <Route path={Routes.PROFILE}>
-        {!isValid ? (
-          <Redirect to={Routes.LOGIN} />
-        ) : auth_info.role === "player" ? (
-          <Profile currentId={current_profile?.id || ''} />
-        ) : (
-          <Scout />
-        )}
-      </Route>
-      <Route path={Routes.NETWORK}>
-        {!isValid ? <Redirect to={Routes.LOGIN} /> : <Network />}
-      </Route>
-      <Route path={Routes.LEADERBOARD}>
-        {!isValid ? <Redirect to={Routes.LOGIN} /> : <LeaderBoard />}
-      </Route>
+      <PrivateRoute
+        exact
+        path={Routes.MAIN}
+        component={() => <Profile currentId={current_profile?.id || ""} />}
+      />
+      <PrivateRoute
+        path={Routes.PROFILE_ID}
+        component={() => <Profile currentId={current_profile?.id || ""} />}
+      />
+      <PrivateRoute
+        path={Routes.PROFILE}
+        component={() =>
+          auth_info.role === "player" ? (
+            <Profile currentId={current_profile?.id || ""} />
+          ) : (
+            <Scout />
+          )
+        }
+      />
+      <PrivateRoute path={Routes.NETWORK} component={() => <Network />} />
+      <PrivateRoute path={Routes.LEADERBOARD} component={() => <LeaderBoard />} />
 
       <LoginRoutes />
     </Switch>
