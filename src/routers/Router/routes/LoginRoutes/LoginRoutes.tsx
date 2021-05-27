@@ -10,7 +10,7 @@ export default function LoginRoutes() {
   return (
     <>
       <Route path={Routes.REGISTRATION}>
-        <SignUp />
+        {!isValid ? <SignUp /> : <Redirect to={Routes.PROFILE} />}
       </Route>
       <Route path={Routes.FORGOTPASSWORD}>
         <ForgotPassword />
