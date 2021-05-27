@@ -5,7 +5,7 @@ import { fetchSignOut } from "../axios";
 
 function* signOutWorker() {
   try {
-    yield call(() => fetchSignOut());
+    yield call(fetchSignOut);
     yield put(logout());
   } catch (e) {
     console.error(e);

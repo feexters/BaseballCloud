@@ -14,7 +14,7 @@ function* validateTokenWorker({
   try {
     yield put(startValidation())
 
-    const token = yield call(() => fetchValidateToken());
+    const token = yield call(fetchValidateToken);
 
     if (token) {
       yield put(setIsValidate(true));

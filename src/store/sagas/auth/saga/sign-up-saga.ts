@@ -30,7 +30,7 @@ function* signUpWorker({
   try {
     yield put(startAuthSubmitting());
 
-    const response = yield call(() => fetchSignUp(payload));
+    const response = yield call(fetchSignUp, payload);
 
     if (response.status === 422) {
       yield put(finishAuthSubmitting("Email has already been taken"));

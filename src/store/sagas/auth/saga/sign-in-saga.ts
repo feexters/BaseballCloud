@@ -28,7 +28,7 @@ function* signInWorker({
 }: SingInWorker): Generator<StrictEffect, void, ResponseData> {
   try {
     yield put(startAuthSubmitting());
-    const response = yield call(() => fetchSignIn(payload));
+    const response = yield call(fetchSignIn, payload);
 
     if (response.headers) {
       yield put(

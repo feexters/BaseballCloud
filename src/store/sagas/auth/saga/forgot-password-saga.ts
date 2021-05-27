@@ -12,7 +12,7 @@ function* forgotPasswordWorker({
   payload,
 }: ForgotPasswordWorker): Generator<StrictEffect, void, number> {
     yield put(startAuthSubmitting())
-    const status = yield call(() => fetchForgotPassword(payload))
+    const status = yield call(fetchForgotPassword, payload)
 
     if (status === 404) {
         yield put(finishAuthSubmitting(`Unable to find user with email '${payload}'.`))
