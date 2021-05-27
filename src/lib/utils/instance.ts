@@ -1,7 +1,7 @@
 import axios from "axios";
 import Auth from "./auth-services";
 
-export const instance = async () => {
+export const instance = () => {
   const authHeaders = Auth.getHeaders()
 
   let headers = {};
