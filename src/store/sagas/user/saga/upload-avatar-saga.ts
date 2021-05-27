@@ -21,7 +21,7 @@ function* uploadAvatarWorker({
 }: SingInWorker): Generator<StrictEffect, void, ResponseData> {
   try {
     const { data } = yield call(fetchUploadAvatar, payload);
-    yield call(() => fetchSignedUrl(payload, data.signedUrl))
+    yield call(fetchSignedUrl, payload, data.signedUrl)
     yield put(uploadAvatar(data.fileKey))
   } catch (e) {
     console.error(e);
